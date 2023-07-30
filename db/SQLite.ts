@@ -12,7 +12,7 @@ export type BoxSession = {
   created_at: string;
 };
 
-export type History = {
+export type CyclicHistory = {
   id: number;
   session_id: number;
   round_number: 1 | 2 | 3 | 4 | 5;
@@ -25,11 +25,12 @@ export type Settings = {
   no_of_rounds: 1 | 2 | 3 | 4 | 5;
 };
 
-type BoxSessionHistory = {
-  [timestamp: string]: number[];
+export type CyclicSessionHistory = {
+  round_number: 1 | 2 | 3 | 4 | 5;
+  hold_time: number;
+  session_id: number;
+  created_at: string;
 };
-
-export type CyclicSessionHistory = Pick<History, 'round_number' | 'hold_time'>;
 
 const databaseName = 'app.db';
 
@@ -65,8 +66,8 @@ export const createTables = () => {
           session_id INTEGER,
           round_number INTEGER,
           hold_time INTEGER,
-          FOREIGN KEY(session_id) REFERENCES sessions(session_id)
-        );`
+          FOREIGN KEY(session_id) REFERENCES cyclic_sessions(session_id)
+          );`
       );
 
       tx.executeSql(
@@ -74,16 +75,7 @@ export const createTables = () => {
           session_id INTEGER PRIMARY KEY NOT NULL,
           no_of_breaths_in_session INTEGER,
           no_of_rounds_in_session INTEGER,
-         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        );`
-      );
-
-      tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS box_history (
-          id INTEGER PRIMARY KEY NOT NULL,
-          session_id INTEGER,
-          session_duration INTEGER,
-          FOREIGN KEY(session_id) REFERENCES sessions(session_id)
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );`
       );
 
@@ -177,26 +169,22 @@ class CyclicSessionsDAO {
 //CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//
 //CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//
 class CyclicSessionHistoryDAO {
-  public async getAllCyclicHistory(): Promise<{ [timestamp: string]: CyclicSessionHistory[] }> {
+  public async getAllCyclicHistory(): Promise<CyclicSessionHistory[]> {
     return new Promise((resolve, reject) => {
       db.transaction(
         (tx: SQLite.SQLTransaction) => {
           tx.executeSql(
-            `SELECT * FROM cyclic_history JOIN cyclic_sessions ON cyclic_history.session_id = cyclic_sessions.session_id ORDER BY cyclic_sessions.created_at DESC;`,
+            `SELECT
+              cyclic_history.round_number,
+              cyclic_history.hold_time,
+              cyclic_sessions.created_at,
+              cyclic_sessions.session_id
+            FROM cyclic_history
+            JOIN cyclic_sessions
+              ON cyclic_history.session_id = cyclic_sessions.session_id
+              ORDER BY cyclic_sessions.created_at DESC;`,
             [],
-            (_, { rows: { _array } }) => {
-              const sessions: { [createdAt: string]: CyclicSessionHistory[] } = {};
-
-              _array.forEach((row: History & CyclicSession) => {
-                const { created_at, round_number, hold_time } = row;
-                if (!sessions[created_at]) {
-                  sessions[created_at] = [];
-                }
-                sessions[created_at].push({ round_number, hold_time });
-              });
-
-              resolve(sessions);
-            }
+            (_, { rows: { _array } }) => resolve(_array)
           );
         },
         (error: Error) => {
@@ -207,7 +195,7 @@ class CyclicSessionHistoryDAO {
     });
   }
 
-  public async getOneCyclicSessionHistory(sessionId: number): Promise<History[]> {
+  public async getOneCyclicSessionHistory(sessionId: number): Promise<CyclicHistory[]> {
     return new Promise((resolve, reject) => {
       db.transaction(
         (tx: SQLite.SQLTransaction) => {
@@ -269,12 +257,12 @@ class CyclicSessionHistoryDAO {
 //BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//
 //BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//
 class BoxSessionHistoryDAO {
-  public async getAllCBoxHistory(): Promise<BoxSessionHistory[]> {
+  public async getAllCBoxHistory(): Promise<BoxSession[]> {
     return new Promise((resolve, reject) => {
       db.transaction(
         (tx: SQLite.SQLTransaction) => {
           tx.executeSql(
-            `SELECT * FROM box_history JOIN box_sessions ON box_history.session_id = box_sessions.session_id ORDER BY box_sessions.created_at DESC;`,
+            `SELECT * FROM box_sessionsORDER BY created_at DESC;`,
             [],
             (_, { rows: { _array } }) => resolve(_array)
           );
@@ -287,4 +275,4 @@ class BoxSessionHistoryDAO {
     });
   }
 }
-export { SettingsDAO, CyclicSessionsDAO, CyclicSessionHistoryDAO };
+export { SettingsDAO, CyclicSessionsDAO, CyclicSessionHistoryDAO, BoxSessionHistoryDAO };

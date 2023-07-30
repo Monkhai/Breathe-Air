@@ -1,18 +1,19 @@
-import { CyclicSessionHistoryDAO, CyclicSessionHistory } from '../db/SQLite';
+import { CyclicSessionHistoryDAO, CyclicSession, CyclicSessionHistory } from '../db/SQLite';
+
+export type Round = {
+  roundNumber: 1 | 2 | 3 | 4 | 5;
+  holdTime: number;
+};
 
 export type SortedSessionHistory = {
   timestamp: string;
-  rounds: CyclicSessionHistory[];
+  rounds: Round[];
 };
 
 const useGetAllHistory = async () => {
   const dbHistory = new CyclicSessionHistoryDAO();
-  const history = await dbHistory.getAllCyclicHistory();
-  const historyArray: SortedSessionHistory[] = Object.keys(history).map((timestamp) => ({
-    timestamp,
-    rounds: history[timestamp],
-  }));
-  return historyArray;
+  const history: CyclicSessionHistory[] = await dbHistory.getAllCyclicHistory();
+  const sortedHistory: SortedSessionHistory[] = [];
 };
 
 export default useGetAllHistory;
