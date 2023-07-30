@@ -173,7 +173,7 @@ class CyclicSessionHistoryDAO {
       db.transaction(
         (tx: SQLite.SQLTransaction) => {
           tx.executeSql(
-            `SELECT * FROM cyclic_history JOIN sessions ON history.session_id = sessions.session_id ORDER BY sessions.created_at DESC;`,
+            `SELECT * FROM cyclic_history JOIN cyclic_sessions ON cyclic_history.session_id = cyclic_sessions.session_id ORDER BY cyclic_sessions.created_at DESC;`,
             [],
             (_, { rows: { _array } }) => {
               const sessions: { [createdAt: string]: SessionHistory[] } = {};
@@ -259,5 +259,23 @@ class CyclicSessionHistoryDAO {
 //BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//
 //BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//
 //BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//
-class BoxSessionHistoryDAO {}
+class BoxSessionHistoryDAO {
+  public async getAllCyclicHistory(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      db.transaction(
+        (tx: SQLite.SQLTransaction) => {
+          tx.executeSql(
+            `SELECT * FROM box_history JOIN box_sessions ON box_history.session_id = box_sessions.session_id ORDER BY box_sessions.created_at DESC;`,
+            [],
+            (_, { rows: { _array } }) => resolve(_array)
+          );
+        },
+        (error: Error) => {
+          console.error(`Error occurred while getting all session history: ${error}`);
+          reject(error);
+        }
+      );
+    });
+  }
+}
 export { SettingsDAO, CyclicSessionsDAO, CyclicSessionHistoryDAO };
