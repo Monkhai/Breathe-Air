@@ -8,7 +8,7 @@ interface Props {
   historyData: SortedSessionHistory[];
 }
 
-const HistoryFlatList = ({ historyData }: Props) => {
+const CyclicHistoryFlatList = ({ historyData }: Props) => {
   return (
     <View>
       <FlatList
@@ -36,7 +36,7 @@ const HistoryFlatList = ({ historyData }: Props) => {
   );
 };
 
-export default HistoryFlatList;
+export default CyclicHistoryFlatList;
 
 const styles = StyleSheet.create({
   FlatlistContainer: {

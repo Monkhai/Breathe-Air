@@ -51,7 +51,7 @@ export const createTables = () => {
       });
 
       tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS history (
+        `CREATE TABLE IF NOT EXISTS cyclic_history (
           id INTEGER PRIMARY KEY NOT NULL,
           session_id INTEGER,
           round_number INTEGER,
@@ -61,10 +61,26 @@ export const createTables = () => {
       );
 
       tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS sessions (
+        `CREATE TABLE IF NOT EXISTS cyclic_sessions (
           session_id INTEGER PRIMARY KEY NOT NULL,
           no_of_breaths_in_session INTEGER,
           no_of_rounds_in_session INTEGER,
+         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );`
+      );
+
+      tx.executeSql(
+        `CREATE TABLE IF NOT EXISTS box_history (
+          id INTEGER PRIMARY KEY NOT NULL,
+          session_id INTEGER,
+          session_duration INTEGER,
+          FOREIGN KEY(session_id) REFERENCES sessions(session_id)
+        );`
+      );
+
+      tx.executeSql(
+        `CREATE TABLE IF NOT EXISTS box_sessions (
+          session_id INTEGER PRIMARY KEY NOT NULL,
          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );`
       );
@@ -114,60 +130,11 @@ class SettingsDAO {
   }
 }
 
-//SESSIONS//SESSIONS//SESSIONS//SESSIONS//SESSIONS//SESSIONS//SESSIONS//SESSIONS//SESSIONS//SESSIONS//SESSIONS
-//SESSIONS//SESSIONS//SESSIONS//SESSIONS//SESSIONS//SESSIONS//SESSIONS//SESSIONS//SESSIONS//SESSIONS//SESSIONS
-//SESSIONS//SESSIONS//SESSIONS//SESSIONS//SESSIONS//SESSIONS//SESSIONS//SESSIONS//SESSIONS//SESSIONS//SESSIONS
-class SessionsDAO {
-  public getOneSession(sessionId: number, callback: (session: Session) => void) {
-    db.transaction(
-      (tx: SQLite.SQLTransaction) => {
-        tx.executeSql(
-          `SELECT * FROM sessions WHERE session_id = ?;`,
-          [sessionId],
-          (_, { rows: { _array } }) => callback(_array[0])
-        );
-      },
-      (error: Error) => {
-        console.error(`Error occurred while getting session: ${error}`);
-      }
-    );
-  }
-
-  public getAllSessions(): Promise<Record<number, Omit<Session, 'session_id'>[]>> {
-    return new Promise((resolve, reject) => {
-      db.transaction(
-        (tx: SQLite.SQLTransaction) => {
-          tx.executeSql(
-            `SELECT * FROM sessions ORDER BY created_at DESC;`,
-            [],
-            (_, { rows: { _array } }) => {
-              // Create an empty object to store the sorted data
-              const sortedData: Record<number, Omit<Session, 'session_id'>[]> = {};
-
-              // Loop through the result rows and organize them by session_id
-              _array.forEach((row: Session) => {
-                const { session_id, ...rest } = row;
-                if (!sortedData[session_id]) {
-                  sortedData[session_id] = [rest];
-                } else {
-                  sortedData[session_id].push(rest);
-                }
-              });
-
-              // Pass the sorted data to the callback function
-              resolve(sortedData);
-            }
-          );
-        },
-        (error: Error) => {
-          console.error(`Error occurred while getting all sessions: ${error}`);
-          reject(error);
-        }
-      );
-    });
-  }
-
-  public createSession(noOfBreaths: 30 | 35, noOfRounds: 1 | 2 | 3 | 4 | 5): Promise<number> {
+//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS
+//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS
+//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS
+class CyclicSessionsDAO {
+  public createCyclicSession(noOfBreaths: 30 | 35, noOfRounds: 1 | 2 | 3 | 4 | 5): Promise<number> {
     return new Promise((resolve, reject) => {
       db.transaction(
         (tx: SQLite.SQLTransaction) => {
@@ -179,12 +146,13 @@ class SessionsDAO {
         },
         (error: Error) => {
           console.error(`Error occurred while creating session: ${error}`);
+          reject(error);
         }
       );
     });
   }
 
-  public clearAllSessions() {
+  public clearAllCyclicSessions() {
     db.transaction(
       (tx: SQLite.SQLTransaction) => {
         tx.executeSql(`DELETE FROM sessions;`);
@@ -196,11 +164,11 @@ class SessionsDAO {
   }
 }
 
-//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY
-//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY
-//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY//HISTORY
-class SessionHistoryDAO {
-  public getAllHistory(): Promise<{ [timestamp: string]: SessionHistory[] }> {
+//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//
+//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//
+//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//
+class CyclicSessionHistoryDAO {
+  public getAllCyclicHistory(): Promise<{ [timestamp: string]: SessionHistory[] }> {
     return new Promise((resolve, reject) => {
       db.transaction(
         (tx: SQLite.SQLTransaction) => {
@@ -230,7 +198,7 @@ class SessionHistoryDAO {
     });
   }
 
-  public async getOneSessionHistory(sessionId: number): Promise<History[]> {
+  public async getOneCyclicSessionHistory(sessionId: number): Promise<History[]> {
     return new Promise((resolve, reject) => {
       db.transaction(
         (tx: SQLite.SQLTransaction) => {
@@ -248,7 +216,7 @@ class SessionHistoryDAO {
     });
   }
 
-  public createHistory(sessionId: number, roundNumber: 1 | 2 | 3 | 4 | 5, holdTime: number) {
+  public createCyclicHistory(sessionId: number, roundNumber: 1 | 2 | 3 | 4 | 5, holdTime: number) {
     db.transaction(
       (tx: SQLite.SQLTransaction) => {
         // Check if a row with the same session_id and round_number already exists
@@ -276,7 +244,7 @@ class SessionHistoryDAO {
     );
   }
 
-  public clearAllHistory() {
+  public clearAllCyclicHistory() {
     db.transaction(
       (tx: SQLite.SQLTransaction) => {
         tx.executeSql(`DELETE FROM history;`);
@@ -288,4 +256,4 @@ class SessionHistoryDAO {
   }
 }
 
-export { SettingsDAO, SessionsDAO, SessionHistoryDAO };
+export { SettingsDAO, CyclicSessionsDAO, CyclicSessionHistoryDAO };

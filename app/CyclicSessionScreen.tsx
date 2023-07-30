@@ -71,7 +71,7 @@ const CyclicSessionScreen = () => {
       setNoOfRounds(s.no_of_rounds);
       setNoOfBreaths(s.no_of_breaths);
       dbSession
-        .createSession(s.no_of_breaths, s.no_of_rounds)
+        .createCyclicSession(s.no_of_breaths, s.no_of_rounds)
         .then((sessionId: number) => setSessionId(sessionId));
       setSettingsLoaded(true);
     });
@@ -175,7 +175,7 @@ const CyclicSessionScreen = () => {
   }, []);
 
   const startInhale = () => {
-    dbSessionHistory.createHistory(sessionId!, roundIndex, exhaleSeconds);
+    dbSessionHistory.createCyclicHistory(sessionId!, roundIndex, exhaleSeconds);
     setExhaleSeconds(0);
     setInhaleSeconds(15);
     setIsExhaleStopwatchActive(false);

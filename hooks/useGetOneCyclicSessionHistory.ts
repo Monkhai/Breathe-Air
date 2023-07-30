@@ -1,8 +1,8 @@
-import { SessionHistoryDAO } from '../db/SQLite';
+import { CyclicSessionHistoryDAO } from '../db/SQLite';
 
-const dbHistory = new SessionHistoryDAO();
+const dbHistory = new CyclicSessionHistoryDAO();
 const useGetOnSessionHistory = async (sessionId: number) => {
-  const data = await dbHistory.getOneSessionHistory(sessionId);
+  const data = await dbHistory.getOneCyclicSessionHistory(sessionId);
   const roundData = data.map((round) => ({
     round: round.round_number,
     hold: round.hold_time,

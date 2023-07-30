@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import AppButton from '../components/AppButton';
 import CyclicRoundFlatlist, { RoundData } from '../components/CyclicRoundFlatlist';
 import Screen from '../components/Screen';
-import useGetOnSessionHistory from '../hooks/useGetOneSessionHistory';
+import useGetOnSessionHistory from '../hooks/useGetOneCyclicSessionHistory';
 import AppText from '../components/AppText';
 
 interface Props {

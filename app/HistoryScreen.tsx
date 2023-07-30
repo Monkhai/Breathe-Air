@@ -1,20 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import HistoryScrollView from '@/components/HistoryScrollView';
+import { router } from 'expo-router';
+import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import AppButton from '../components/AppButton';
 import AppText from '../components/AppText';
-import HistoryFlatList from '../components/HistoryFlatList';
 import Screen from '../components/Screen';
-import useGetAllHistory, { SortedSessionHistory } from '../hooks/useGetAllHistory';
-import { router } from 'expo-router';
+import PageIndicator from '@/components/PageIndicator';
 
 const HistoryScreen = () => {
-  const [historyData, setHistoryData] = useState<SortedSessionHistory[]>();
+  const [page, setPage] = useState<1 | 2>(1);
 
-  useEffect(() => {
-    useGetAllHistory().then((history) => setHistoryData(history));
-  }, []);
-
-  if (!historyData) return <AppText>Sorry bro</AppText>;
+  const handleScrollEnd = () => {
+    if (page === 1) {
+      setPage(2);
+    }
+    if (page === 2) {
+      setPage(1);
+    }
+  };
 
   return (
     <Screen>
@@ -30,13 +33,11 @@ const HistoryScreen = () => {
           </AppText>
         </View>
         <View style={styles.midControllers}>
-          {historyData.length !== 0 ? (
-            <HistoryFlatList historyData={historyData} />
-          ) : (
-            <AppText>No history at the moment</AppText>
-          )}
+          <HistoryScrollView onScrollEnd={handleScrollEnd} />
         </View>
-        <View style={styles.bottomControllers} />
+        <View style={styles.bottomControllers}>
+          <PageIndicator page={page} />
+        </View>
       </View>
     </Screen>
   );
@@ -59,13 +60,13 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
   },
-  midControllers: {
-    flex: 14,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-  },
   heading: {
     flex: 2,
+  },
+  midControllers: {
+    flex: 16,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   bottomControllers: {
     flex: 1.2,

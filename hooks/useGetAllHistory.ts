@@ -1,4 +1,4 @@
-import { SessionHistory, SessionHistoryDAO } from '../db/SQLite';
+import { CyclicSessionHistoryDAO, SessionHistory } from '../db/SQLite';
 
 export type SortedSessionHistory = {
   timestamp: string;
@@ -6,8 +6,8 @@ export type SortedSessionHistory = {
 };
 
 const useGetAllHistory = async () => {
-  const dbHistory = new SessionHistoryDAO();
-  const history = await dbHistory.getAllHistory();
+  const dbHistory = new CyclicSessionHistoryDAO();
+  const history = await dbHistory.getAllCyclicHistory();
   const historyArray: SortedSessionHistory[] = Object.keys(history).map((timestamp) => ({
     timestamp,
     rounds: history[timestamp],
