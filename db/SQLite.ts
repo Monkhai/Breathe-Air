@@ -1,9 +1,14 @@
 import * as SQLite from 'expo-sqlite';
 
-export type Session = {
+export type CyclicSession = {
   session_id: number;
   no_of_breaths_in_session: 30 | 35;
   no_of_rounds_in_session: 1 | 2 | 3 | 4 | 5;
+  created_at: string;
+};
+
+export type BoxSession = {
+  session_id: number;
   created_at: string;
 };
 
@@ -20,7 +25,11 @@ export type Settings = {
   no_of_rounds: 1 | 2 | 3 | 4 | 5;
 };
 
-export type SessionHistory = Pick<History, 'round_number' | 'hold_time'>;
+type BoxSessionHistory = {
+  [timestamp: string]: number[];
+};
+
+export type CyclicSessionHistory = Pick<History, 'round_number' | 'hold_time'>;
 
 const databaseName = 'app.db';
 
@@ -168,7 +177,7 @@ class CyclicSessionsDAO {
 //CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//
 //CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//
 class CyclicSessionHistoryDAO {
-  public async getAllCyclicHistory(): Promise<{ [timestamp: string]: SessionHistory[] }> {
+  public async getAllCyclicHistory(): Promise<{ [timestamp: string]: CyclicSessionHistory[] }> {
     return new Promise((resolve, reject) => {
       db.transaction(
         (tx: SQLite.SQLTransaction) => {
@@ -176,9 +185,9 @@ class CyclicSessionHistoryDAO {
             `SELECT * FROM cyclic_history JOIN cyclic_sessions ON cyclic_history.session_id = cyclic_sessions.session_id ORDER BY cyclic_sessions.created_at DESC;`,
             [],
             (_, { rows: { _array } }) => {
-              const sessions: { [createdAt: string]: SessionHistory[] } = {};
+              const sessions: { [createdAt: string]: CyclicSessionHistory[] } = {};
 
-              _array.forEach((row: History & Session) => {
+              _array.forEach((row: History & CyclicSession) => {
                 const { created_at, round_number, hold_time } = row;
                 if (!sessions[created_at]) {
                   sessions[created_at] = [];
@@ -260,7 +269,7 @@ class CyclicSessionHistoryDAO {
 //BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//
 //BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//
 class BoxSessionHistoryDAO {
-  public async getAllCyclicHistory(): Promise<any> {
+  public async getAllCBoxHistory(): Promise<BoxSessionHistory[]> {
     return new Promise((resolve, reject) => {
       db.transaction(
         (tx: SQLite.SQLTransaction) => {
