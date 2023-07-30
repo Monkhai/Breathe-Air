@@ -139,7 +139,7 @@ class CyclicSessionsDAO {
       db.transaction(
         (tx: SQLite.SQLTransaction) => {
           tx.executeSql(
-            `INSERT INTO sessions (no_of_breaths_in_session, no_of_rounds_in_session) VALUES (?, ?);`,
+            `INSERT INTO cyclic_sessions (no_of_breaths_in_session, no_of_rounds_in_session) VALUES (?, ?);`,
             [noOfBreaths, noOfRounds],
             (_, resultSet) => resolve(resultSet.insertId!)
           );
@@ -168,12 +168,12 @@ class CyclicSessionsDAO {
 //CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//
 //CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//
 class CyclicSessionHistoryDAO {
-  public getAllCyclicHistory(): Promise<{ [timestamp: string]: SessionHistory[] }> {
+  public async getAllCyclicHistory(): Promise<{ [timestamp: string]: SessionHistory[] }> {
     return new Promise((resolve, reject) => {
       db.transaction(
         (tx: SQLite.SQLTransaction) => {
           tx.executeSql(
-            `SELECT * FROM history JOIN sessions ON history.session_id = sessions.session_id ORDER BY sessions.created_at DESC;`,
+            `SELECT * FROM cyclic_history JOIN sessions ON history.session_id = sessions.session_id ORDER BY sessions.created_at DESC;`,
             [],
             (_, { rows: { _array } }) => {
               const sessions: { [createdAt: string]: SessionHistory[] } = {};
@@ -203,7 +203,7 @@ class CyclicSessionHistoryDAO {
       db.transaction(
         (tx: SQLite.SQLTransaction) => {
           tx.executeSql(
-            `SELECT * FROM history WHERE session_id = ?;`,
+            `SELECT * FROM cyclic_history WHERE session_id = ?;`,
             [sessionId],
             (_, { rows: { _array } }) => resolve(_array)
           );
@@ -221,7 +221,7 @@ class CyclicSessionHistoryDAO {
       (tx: SQLite.SQLTransaction) => {
         // Check if a row with the same session_id and round_number already exists
         tx.executeSql(
-          `SELECT * FROM history WHERE session_id = ? AND round_number = ?;`,
+          `SELECT * FROM cyclic_history WHERE session_id = ? AND round_number = ?;`,
           [sessionId, roundNumber],
           (_, { rows: { _array } }) => {
             if (_array.length > 0) {
@@ -231,7 +231,7 @@ class CyclicSessionHistoryDAO {
             } else {
               // Row with the same combination does not exist, insert a new row
               tx.executeSql(
-                `INSERT INTO history (session_id, round_number, hold_time) VALUES (?, ?, ?);`,
+                `INSERT INTO cyclic_history (session_id, round_number, hold_time) VALUES (?, ?, ?);`,
                 [sessionId, roundNumber, holdTime]
               );
             }
@@ -256,4 +256,8 @@ class CyclicSessionHistoryDAO {
   }
 }
 
+//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//
+//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//
+//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//
+class BoxSessionHistoryDAO {}
 export { SettingsDAO, CyclicSessionsDAO, CyclicSessionHistoryDAO };
