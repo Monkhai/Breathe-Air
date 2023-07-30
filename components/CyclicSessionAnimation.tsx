@@ -10,7 +10,8 @@ interface Props {
   noOfBreaths: 30 | 35;
   onCountdownFinish: (isCancelled: boolean) => void;
   onCyclicFinish: (isCancelled: boolean) => void;
-  setAnimRef: (Ref: RefObject<LottieView>) => void;
+  // setAnimRef: (Ref: RefObject<LottieView>) => void;
+  animRef: RefObject<LottieView>;
 }
 
 const CyclicSessionAnimation = ({
@@ -18,13 +19,14 @@ const CyclicSessionAnimation = ({
   noOfBreaths,
   onCountdownFinish,
   onCyclicFinish,
-  setAnimRef,
+  // setAnimRef,
+  animRef,
 }: Props) => {
-  const animRef = useRef<LottieView>(null);
+  // const animRef = useRef<LottieView>(null);
 
-  useEffect(() => {
-    setAnimRef(animRef);
-  }, []);
+  // useEffect(() => {
+  //   setAnimRef(animRef);
+  // }, []);
 
   return (
     <View>
@@ -53,7 +55,7 @@ const CyclicSessionAnimation = ({
   );
 };
 
-export default CyclicSessionAnimation;
+export default React.memo(CyclicSessionAnimation);
 
 const styles = StyleSheet.create({
   lottie: {

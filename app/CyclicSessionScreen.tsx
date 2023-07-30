@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
 import LottieView from 'lottie-react-native';
-import React, { RefObject, useEffect, useRef, useState } from 'react';
-import { Animated, Platform, StyleSheet, View } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Animated, StyleSheet, View } from 'react-native';
 import AppButton from '../components/AppButton';
 import AppText from '../components/AppText';
 import CyclicSessionAnimation from '../components/CyclicSessionAnimation';
@@ -32,13 +32,13 @@ const CyclicSessionScreen = () => {
   const [isExhaleStopwatchActive, setIsExhaleStopwatchActive] = useState(false);
   const [isInhaleStopwatchActive, setIsInhaleStopwatchActive] = useState(false);
   const [roundIndex, setRoundIndex] = useState<1 | 2 | 3 | 4 | 5>(INITIAL_ROUND_INDEX);
-  const [animRef, setAnimRef] = useState<RefObject<LottieView>>();
   const [guideText, setGuideText] = useState('Get ready...');
   const [noOfRounds, setNoOfRounds] = useState<1 | 2 | 3 | 4 | 5>();
   const [noOfBreaths, setNoOfBreaths] = useState<30 | 35>();
   const [settingsLoaded, setSettingsLoaded] = useState(false);
   const [sessionId, setSessionId] = useState<number>();
   const animatedText = useRef(new Animated.Value(INITIAL_ANIMATED_TEXT)).current;
+  const animRef = useRef<LottieView>(null);
   let CYCLIC_TIMEOUT = useRef<NodeJS.Timeout | null>(null);
 
   const claculateFrameRate = () => {
@@ -54,25 +54,17 @@ const CyclicSessionScreen = () => {
 
   useEffect(() => {
     if (isPaused) {
-      if (Platform.OS == 'android') {
-        animRef?.current?.pause();
-      } else {
-        animRef?.current?.pause();
-      }
+      animRef?.current?.pause();
     } else {
-      animRef?.current?.play();
+      animRef?.current?.resume();
     }
   }, [isPaused]);
 
-  //-------------------------------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------------------------------
   useEffect(() => {
     if (inhaleSeconds === 0 && roundIndex === noOfRounds) {
       resetAll();
     }
   }, [inhaleSeconds, roundIndex]);
-  //-------------------------------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------------------------------
 
   useEffect(() => {
     dbSettings.getSettings().then((s) => {
@@ -84,13 +76,10 @@ const CyclicSessionScreen = () => {
       setSettingsLoaded(true);
     });
   }, []);
-  //-------------------------------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------------------------------
+
   useEffect(() => {
     return () => clearTimeout(CYCLIC_TIMEOUT.current!);
   }, []);
-  //-------------------------------------------------------------------------------------------------------------------------
-  //-------------------------------------------------------------------------------------------------------------------------
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -158,11 +147,11 @@ const CyclicSessionScreen = () => {
     setExhaleSeconds(INITIAL_EXHALE_SECONDS);
     setInhaleSeconds(INITIAL_INHALE_SECONDS);
     setRoundIndex(INITIAL_ROUND_INDEX);
-    setIsPaused(true);
+    // setIsPaused(true);
     setIsFinished(true);
     setGuideText('');
   };
-  const handleCountdownFinish = (isCancelled: boolean) => {
+  const handleCountdownFinish = useCallback((isCancelled: boolean) => {
     if (isCancelled) return;
     setGuideText('Take deep, coninuous breathes');
     setIsCountdown(false);
@@ -171,19 +160,19 @@ const CyclicSessionScreen = () => {
       announceCyclicAboutToFinish,
       CYCLIC_ANIMATION_TRIGGER_POINT
     );
-  };
+  }, []);
 
   const announceCyclicAboutToFinish = () => {
     setGuideText('Get ready to fully exhale');
   };
 
-  const handleCyclicFinish = (isCancelled: boolean) => {
+  const handleCyclicFinish = useCallback((isCancelled: boolean) => {
     if (isCancelled) return;
     revealStopwatch();
     setIsExhaleStopwatchActive(true);
     setIsStopwatchRunning(true);
     setGuideText('Hold your breath, fully exhaled');
-  };
+  }, []);
 
   const startInhale = () => {
     dbSessionHistory.createHistory(sessionId!, roundIndex, exhaleSeconds);
@@ -246,7 +235,8 @@ const CyclicSessionScreen = () => {
               isCountdown={isCountdown}
               onCountdownFinish={handleCountdownFinish}
               onCyclicFinish={handleCyclicFinish}
-              setAnimRef={setAnimRef}
+              // setAnimRef={setAnimRef}
+              animRef={animRef}
             />
           )}
         </View>

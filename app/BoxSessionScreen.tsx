@@ -1,16 +1,16 @@
+import { router } from 'expo-router';
 import LottieView from 'lottie-react-native';
-import React, { RefObject, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import AppButton from '../components/AppButton';
 import AppText from '../components/AppText';
 import BoxSessionAnimation from '../components/BoxSessionAnimation';
 import Screen from '../components/Screen';
-import { router } from 'expo-router';
 
 const BoxSessionScreen = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [isCountdown, setIsCountdown] = useState(true);
-  const [animRef, setAnimRef] = useState<RefObject<LottieView>>();
+  const animRef = useRef<LottieView>(null);
 
   useEffect(() => {
     if (isPaused) {
@@ -20,9 +20,9 @@ const BoxSessionScreen = () => {
     }
   }, [isPaused]);
 
-  const handleCountdownFinish = () => {
+  const handleCountdownFinish = useCallback(() => {
     setIsCountdown(false);
-  };
+  }, []);
 
   const handlePause = () => {
     setIsPaused(true);
@@ -46,7 +46,7 @@ const BoxSessionScreen = () => {
           <BoxSessionAnimation
             isCountdown={isCountdown}
             onCountdownFinish={handleCountdownFinish}
-            setAnimRef={setAnimRef}
+            animRef={animRef}
           />
         </View>
         <View style={styles.midSpaceContainer}>

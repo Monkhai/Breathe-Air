@@ -7,16 +7,10 @@ import LottieView from 'lottie-react-native';
 interface Props {
   isCountdown: boolean;
   onCountdownFinish: (isCancelled: boolean) => void;
-  setAnimRef: (Ref: RefObject<LottieView>) => void;
+  animRef: RefObject<LottieView>;
 }
 
-const BoxSessionAnimation = ({ isCountdown, onCountdownFinish, setAnimRef }: Props) => {
-  const animRef = useRef<LottieView>(null);
-
-  useEffect(() => {
-    setAnimRef(animRef);
-  }, []);
-
+const BoxSessionAnimation = ({ isCountdown, onCountdownFinish, animRef }: Props) => {
   return (
     <View>
       {isCountdown && (
@@ -44,7 +38,7 @@ const BoxSessionAnimation = ({ isCountdown, onCountdownFinish, setAnimRef }: Pro
   );
 };
 
-export default BoxSessionAnimation;
+export default React.memo(BoxSessionAnimation);
 
 const styles = StyleSheet.create({
   lottie: {
