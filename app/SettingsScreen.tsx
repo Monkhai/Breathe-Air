@@ -16,6 +16,7 @@ const SettingsScreen = () => {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [noOfRounds, setNoOfRounds] = useState<1 | 2 | 3 | 4 | 5>(3);
   const [noOfBreaths, setNoOfBreaths] = useState<30 | 35>(30);
+  const [OGSettings, setOGSettings] = useState<Settings>();
 
   const setSettings = (settings: Settings) => {
     setTheme(settings.theme);
@@ -24,41 +25,49 @@ const SettingsScreen = () => {
   };
 
   useEffect(() => {
-    useGetSettings().then((settings) => setSettings(settings));
+    useGetSettings().then((settings) => {
+      setSettings(settings);
+      setOGSettings(settings);
+    });
   }, []);
 
   const saveSettings = () => {
     dbSettings.updateSettings(theme, noOfBreaths, noOfRounds);
   };
 
-  const handleBack = () => {};
+  const handleBack = () => {
+    if (
+      OGSettings?.no_of_breaths !== noOfBreaths ||
+      OGSettings?.no_of_rounds !== noOfRounds ||
+      OGSettings?.theme !== theme
+    ) {
+      Alert.alert('Wait!', 'would you like to save the changes that you made?', [
+        {
+          text: 'Yes',
+          onPress: () => {
+            saveSettings();
+            router.back();
+          },
+          style: 'default',
+        },
+        {
+          text: 'No',
+          onPress: () => {
+            router.back();
+          },
+          style: 'default',
+        },
+      ]);
+    } else {
+      router.back();
+    }
+  };
 
   return (
     <Screen>
       <View style={styles.container}>
         <View style={styles.topControllers}>
-          <AppButton
-            icon="chevron-back"
-            onPress={() =>
-              Alert.alert('Wait!', 'would you like to save the changes that you made?', [
-                {
-                  text: 'Yes',
-                  onPress: () => {
-                    saveSettings();
-                    router.back();
-                  },
-                  style: 'default',
-                },
-                {
-                  text: 'No',
-                  onPress: () => {
-                    router.back();
-                  },
-                  style: 'default',
-                },
-              ])
-            }
-          >
+          <AppButton icon="chevron-back" onPress={handleBack}>
             Home
           </AppButton>
         </View>

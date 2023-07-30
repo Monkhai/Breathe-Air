@@ -22,6 +22,7 @@ const BoxSessionAnimation = ({ isCountdown, onCountdownFinish, setAnimRef }: Pro
       {isCountdown && (
         <LottieView
           source={boxCountdown}
+          imageAssetsFolder="../assets/animations/box-breathing-countdown.json"
           onAnimationFinish={onCountdownFinish}
           autoPlay
           loop={false}
@@ -30,7 +31,14 @@ const BoxSessionAnimation = ({ isCountdown, onCountdownFinish, setAnimRef }: Pro
         />
       )}
       {!isCountdown && (
-        <LottieView source={boxSession} autoPlay loop={true} ref={animRef} style={styles.lottie} />
+        <LottieView
+          source={boxSession}
+          imageAssetsFolder="../assets/animations/box-breathing-1-round.json"
+          autoPlay
+          loop={true}
+          ref={animRef}
+          style={styles.lottie}
+        />
       )}
     </View>
   );

@@ -5,6 +5,7 @@ import AppButton from '../components/AppButton';
 import AppText from '../components/AppText';
 import BoxSessionAnimation from '../components/BoxSessionAnimation';
 import Screen from '../components/Screen';
+import { router } from 'expo-router';
 
 const BoxSessionScreen = () => {
   const [isPaused, setIsPaused] = useState(false);
@@ -55,11 +56,7 @@ const BoxSessionScreen = () => {
         </View>
         <View style={styles.bottomControllers}>
           {isPaused && (
-            <AppButton
-              fontSize="regular"
-              fontWeight="regular"
-              onPress={() => console.log('I cannot do nothing right now')}
-            >
+            <AppButton fontSize="regular" fontWeight="regular" onPress={() => router.back()}>
               Finish Session
             </AppButton>
           )}

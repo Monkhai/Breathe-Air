@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
 import LottieView from 'lottie-react-native';
 import React, { RefObject, useEffect, useRef, useState } from 'react';
-import { Animated, StyleSheet, View } from 'react-native';
+import { Animated, Platform, StyleSheet, View } from 'react-native';
 import AppButton from '../components/AppButton';
 import AppText from '../components/AppText';
 import CyclicSessionAnimation from '../components/CyclicSessionAnimation';
@@ -54,7 +54,11 @@ const CyclicSessionScreen = () => {
 
   useEffect(() => {
     if (isPaused) {
-      animRef?.current?.pause();
+      if (Platform.OS == 'android') {
+        animRef?.current?.pause();
+      } else {
+        animRef?.current?.pause();
+      }
     } else {
       animRef?.current?.play();
     }

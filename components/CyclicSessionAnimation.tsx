@@ -31,6 +31,7 @@ const CyclicSessionAnimation = ({
       {isCountdown ? (
         <LottieView
           ref={animRef}
+          imageAssetsFolder="../assets"
           source={cyclicCountdown}
           autoPlay
           loop={false}
@@ -40,6 +41,7 @@ const CyclicSessionAnimation = ({
       ) : (
         <LottieView
           source={noOfBreaths === 30 ? cyclic30 : cyclic35}
+          imageAssetsFolder="../assets"
           ref={animRef}
           autoPlay
           loop={false}

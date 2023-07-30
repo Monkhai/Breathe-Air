@@ -30,7 +30,11 @@ const HistoryScreen = () => {
           </AppText>
         </View>
         <View style={styles.midControllers}>
-          <HistoryFlatList historyData={historyData} />
+          {historyData.length !== 0 ? (
+            <HistoryFlatList historyData={historyData} />
+          ) : (
+            <AppText>No history at the moment</AppText>
+          )}
         </View>
         <View style={styles.bottomControllers} />
       </View>
