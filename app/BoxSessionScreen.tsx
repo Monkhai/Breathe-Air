@@ -6,13 +6,16 @@ import AppButton from '../components/AppButton';
 import AppText from '../components/AppText';
 import BoxSessionAnimation from '../components/BoxSessionAnimation';
 import Screen from '../components/Screen';
+import { formatTime } from '@/services/timeFormators';
+import { BoxSessionHistoryDAO } from '@/db/SQLite';
 
 const BoxSessionScreen = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [isCountdown, setIsCountdown] = useState(true);
   const animRef = useRef<LottieView>(null);
   const [trigger, setTrigger] = useState(false);
-
+  const [Stopwatch, setStopwatch] = useState<number>(0);
+  const dbBoxSession = new BoxSessionHistoryDAO();
   useEffect(() => {
     if (isPaused) {
       animRef?.current?.pause();
@@ -21,6 +24,18 @@ const BoxSessionScreen = () => {
     }
   }, [isPaused]);
 
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+    if (!isCountdown && !isPaused) {
+      interval = setInterval(() => {
+        setStopwatch((time) => time + 1);
+      }, 1000);
+    }
+
+    return () => clearInterval(interval!);
+  }, [isPaused, isCountdown]);
+
+  //this is necessary for android animation to play when started
   useEffect(() => {
     setTrigger((a) => !a);
     animRef.current?.play();
@@ -36,6 +51,12 @@ const BoxSessionScreen = () => {
 
   const handleContinue = () => {
     setIsPaused(false);
+  };
+
+  const finishSession = () => {
+    dbBoxSession.createBoxSession(Stopwatch).then(() => {
+      router.push('/');
+    });
   };
 
   return (
@@ -57,13 +78,16 @@ const BoxSessionScreen = () => {
           />
         </View>
         <View style={styles.midSpaceContainer}>
+          <View style={{ paddingBottom: 50, paddingTop: 30 }}>
+            <AppText fontSize="xl">{formatTime(Stopwatch)}</AppText>
+          </View>
           <AppText textColor="black" fontWeight="light">
             Press pause to leave the session at any time
           </AppText>
         </View>
         <View style={styles.bottomControllers}>
           {isPaused && (
-            <AppButton fontSize="regular" fontWeight="regular" onPress={() => router.back()}>
+            <AppButton fontSize="regular" fontWeight="regular" onPress={finishSession}>
               Finish Session
             </AppButton>
           )}
@@ -91,13 +115,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   lottieContainer: {
-    flex: 10,
+    flex: 8,
+    borderWidth: 1,
   },
   midSpaceContainer: {
-    flex: 6,
+    flex: 8,
     justifyContent: 'flex-start',
     alignItems: 'center',
     width: '80%',
+    borderWidth: 1,
   },
   bottomControllers: {
     flex: 1.2,
