@@ -3,13 +3,23 @@ import React, { RefObject, useEffect, useRef } from 'react';
 import AppText from './AppText';
 import LottieView from 'lottie-react-native';
 import transition from '../assets/animations/transition.json';
+import { formatTime } from '@/services/timeFormators';
 
 interface Props {
   setAnimRef: (animRef: RefObject<LottieView>) => void;
   isBox: boolean;
+  cyclicAverage: number | null;
+  cyclicMax: number | null;
+  isCyclicLoading: boolean;
 }
 
-const HomeScreenTransitionAnimation = ({ setAnimRef, isBox }: Props) => {
+const HomeScreenTransitionAnimation = ({
+  setAnimRef,
+  isBox,
+  cyclicAverage,
+  cyclicMax,
+  isCyclicLoading,
+}: Props) => {
   const animRef = useRef<LottieView>(null);
   const fadeCircleText = useRef(new Animated.Value(0)).current;
   const fadeBoxText = useRef(new Animated.Value(0)).current;
@@ -51,15 +61,27 @@ const HomeScreenTransitionAnimation = ({ setAnimRef, isBox }: Props) => {
             <AppText fontSize="large" fontWeight="bold">
               All Time Record
             </AppText>
-            <AppText fontSize="regular" fontWeight="light">
-              02:30
-            </AppText>
+            {isCyclicLoading ? (
+              <AppText fontSize="regular" fontWeight="light">
+                Loading...
+              </AppText>
+            ) : (
+              <AppText fontSize="regular" fontWeight="light">
+                {cyclicMax ? formatTime(cyclicMax) : 'not available'}
+              </AppText>
+            )}
             <AppText fontSize="large" fontWeight="bold">
               Average Hold Time
             </AppText>
-            <AppText fontSize="regular" fontWeight="light">
-              02:30
-            </AppText>
+            {isCyclicLoading ? (
+              <AppText fontSize="regular" fontWeight="light">
+                Loading...
+              </AppText>
+            ) : (
+              <AppText fontSize="regular" fontWeight="light">
+                {cyclicAverage ? formatTime(cyclicAverage) : 'not available'}
+              </AppText>
+            )}
           </Animated.View>
         )}
         {isBox && (

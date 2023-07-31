@@ -26,3 +26,5 @@ const useGetCyclicStats = () => {
   }, []);
   return { average, max, isLoading, error };
 };
+
+export default useGetCyclicStats;

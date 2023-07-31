@@ -6,11 +6,17 @@ import BreathPicker from '../components/BreathPicker';
 import HomeScreenTransitionAnimation from '../components/HomeScreenTransitionAnimation';
 import Screen from '../components/Screen';
 import { router } from 'expo-router';
+import useGetCyclicStats from '@/hooks/useGetCyclicStats';
 
 const HomeScreen = () => {
   const [isBox, setIsBox] = useState(false);
   const [animRef, setAnimRef] = useState<RefObject<LottieView>>();
-
+  const {
+    average: cyclicAverage,
+    max: cyclicMax,
+    isLoading: isCyclicLoading,
+    error: cyclicError,
+  } = useGetCyclicStats();
   const handleStart = () => {
     if (isBox) {
       router.push('/BoxSessionScreen');
@@ -27,7 +33,13 @@ const HomeScreen = () => {
           <AppButton onPress={() => router.push('/HistoryScreen')}>History</AppButton>
         </View>
         <View style={styles.lottieContainer}>
-          <HomeScreenTransitionAnimation setAnimRef={setAnimRef} isBox={isBox} />
+          <HomeScreenTransitionAnimation
+            isCyclicLoading={isCyclicLoading}
+            setAnimRef={setAnimRef}
+            isBox={isBox}
+            cyclicAverage={cyclicAverage}
+            cyclicMax={cyclicMax}
+          />
         </View>
         <View style={styles.scrollViewContainer}>
           <BreathPicker animRef={animRef!} isBox={isBox} setIsBox={setIsBox} />
