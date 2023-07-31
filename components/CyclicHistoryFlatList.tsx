@@ -22,7 +22,7 @@ const CyclicHistoryFlatList = ({ historyData }: Props) => {
               </View>
               {session.rounds.map((round) => {
                 return (
-                  <View style={styles.rowContainer}>
+                  <View key={round.roundNumber} style={styles.rowContainer}>
                     <AppText textColor="black">Round {round.roundNumber}</AppText>
                     <AppText textColor="black">{formatTime(round.holdTime)}</AppText>
                   </View>
