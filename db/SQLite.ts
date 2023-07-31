@@ -370,7 +370,7 @@ class BoxSessionHistoryDAO {
           `SELECT AVG(duration) AS average_duration FROM box_sessions;`,
           [],
           (_, { rows }) => {
-            const maxSessionTime = rows.length > 0 ? rows._array[0].average_hold_time : null;
+            const maxSessionTime = rows.length > 0 ? rows._array[0].average_duration : null;
             resolve(maxSessionTime);
           }
         ),
@@ -389,7 +389,7 @@ class BoxSessionHistoryDAO {
           `SELECT MAX(duration) AS max_duration FROM box_sessions;`,
           [],
           (_, { rows }) => {
-            const maxSessionTime = rows.length > 0 ? rows._array[0].max_hold_time : null;
+            const maxSessionTime = rows.length > 0 ? rows._array[0].max_duration : null;
             resolve(maxSessionTime);
           }
         ),

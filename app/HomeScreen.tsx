@@ -7,6 +7,8 @@ import HomeScreenTransitionAnimation from '../components/HomeScreenTransitionAni
 import Screen from '../components/Screen';
 import { router } from 'expo-router';
 import useGetCyclicStats from '@/hooks/useGetCyclicStats';
+import useGetBoxStats from '@/hooks/useGetBoxStats';
+import AppText from '@/components/AppText';
 
 const HomeScreen = () => {
   const [isBox, setIsBox] = useState(false);
@@ -17,6 +19,13 @@ const HomeScreen = () => {
     isLoading: isCyclicLoading,
     error: cyclicError,
   } = useGetCyclicStats();
+  const {
+    average: boxAverage,
+    max: boxMax,
+    isLoading: isBoxLoading,
+    error: boxError,
+  } = useGetBoxStats();
+
   const handleStart = () => {
     if (isBox) {
       router.push('/BoxSessionScreen');
@@ -24,6 +33,11 @@ const HomeScreen = () => {
       router.push('/CyclicSessionScreen');
     }
   };
+
+  console.log(boxMax, boxAverage, cyclicAverage, cyclicMax);
+
+  if (boxError) return <AppText>{boxError.message}</AppText>;
+  if (cyclicError) return <AppText>{cyclicError.message}</AppText>;
 
   return (
     <Screen>
@@ -34,11 +48,14 @@ const HomeScreen = () => {
         </View>
         <View style={styles.lottieContainer}>
           <HomeScreenTransitionAnimation
-            isCyclicLoading={isCyclicLoading}
             setAnimRef={setAnimRef}
             isBox={isBox}
             cyclicAverage={cyclicAverage}
             cyclicMax={cyclicMax}
+            isCyclicLoading={isCyclicLoading}
+            boxAverage={boxAverage}
+            boxMax={boxMax}
+            isBoxLoading={isBoxLoading}
           />
         </View>
         <View style={styles.scrollViewContainer}>

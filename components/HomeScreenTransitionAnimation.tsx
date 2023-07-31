@@ -11,6 +11,9 @@ interface Props {
   cyclicAverage: number | null;
   cyclicMax: number | null;
   isCyclicLoading: boolean;
+  boxAverage: number | null;
+  boxMax: number | null;
+  isBoxLoading: boolean;
 }
 
 const HomeScreenTransitionAnimation = ({
@@ -19,6 +22,9 @@ const HomeScreenTransitionAnimation = ({
   cyclicAverage,
   cyclicMax,
   isCyclicLoading,
+  boxAverage,
+  boxMax,
+  isBoxLoading,
 }: Props) => {
   const animRef = useRef<LottieView>(null);
   const fadeCircleText = useRef(new Animated.Value(0)).current;
@@ -89,15 +95,27 @@ const HomeScreenTransitionAnimation = ({
             <AppText fontSize="large" fontWeight="bold">
               Longest Session
             </AppText>
-            <AppText fontSize="regular" fontWeight="light">
-              02:30
-            </AppText>
+            {isBoxLoading ? (
+              <AppText fontSize="regular" fontWeight="light">
+                Loading...
+              </AppText>
+            ) : (
+              <AppText fontSize="regular" fontWeight="light">
+                {boxMax ? formatTime(boxMax) : 'not available'}
+              </AppText>
+            )}
             <AppText fontSize="large" fontWeight="bold">
               Average Session
             </AppText>
-            <AppText fontSize="regular" fontWeight="light">
-              02:30
-            </AppText>
+            {isBoxLoading ? (
+              <AppText fontSize="regular" fontWeight="light">
+                Loading...
+              </AppText>
+            ) : (
+              <AppText fontSize="regular" fontWeight="light">
+                {boxAverage ? formatTime(boxAverage) : 'not available'}
+              </AppText>
+            )}
           </Animated.View>
         )}
       </View>
