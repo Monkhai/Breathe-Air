@@ -12,9 +12,6 @@ const BoxSessionScreen = () => {
   const [isCountdown, setIsCountdown] = useState(true);
   const animRef = useRef<LottieView>(null);
   const [trigger, setTrigger] = useState(false);
-  const [startTime, setStartTime] = useState(null);
-  const [now, setNow] = useState(null);
-  const intervalRef = useRef(null);
 
   useEffect(() => {
     if (isPaused) {
@@ -24,8 +21,12 @@ const BoxSessionScreen = () => {
     }
   }, [isPaused]);
 
-  const handleCountdownFinish = useCallback(() => {
+  useEffect(() => {
+    setTrigger((a) => !a);
     animRef.current?.play();
+  }, [isCountdown]);
+
+  const handleCountdownFinish = useCallback(() => {
     setIsCountdown(false);
   }, []);
 
