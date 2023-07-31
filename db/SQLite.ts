@@ -10,6 +10,7 @@ export type CyclicSession = {
 export type BoxSession = {
   session_id: number;
   created_at: string;
+  duration: number;
 };
 
 export type CyclicHistory = {
@@ -278,7 +279,7 @@ class BoxSessionHistoryDAO {
       db.transaction(
         (tx: SQLite.SQLTransaction) => {
           tx.executeSql(
-            `SELECT * FROM box_sessionsORDER BY created_at DESC;`,
+            `SELECT * FROM box_sessions ORDER BY created_at DESC;`,
             [],
             (_, { rows: { _array } }) => resolve(_array)
           );

@@ -48,7 +48,6 @@ const CyclicSessionScreen = () => {
       dbSession
         .createCyclicSession(settings.no_of_breaths, settings.no_of_rounds)
         .then((id: number) => {
-          console.log(`this isthe id: ${id}`);
           sessionId.current = id;
         });
     }

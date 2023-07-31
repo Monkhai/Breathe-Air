@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import AppButton from '../components/AppButton';
-import CyclicRoundFlatlist, { RoundData } from '../components/CyclicRoundFlatlist';
-import Screen from '../components/Screen';
-import AppText from '../components/AppText';
 import useGetOneCyclicSessionHistory from '@/hooks/useGetOneCyclicSessionHistory';
 import { router, useLocalSearchParams } from 'expo-router';
-import { CyclicSessionHistoryDAO } from '@/db/SQLite';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import AppButton from '../components/AppButton';
+import AppText from '../components/AppText';
+import CyclicRoundFlatlist from '../components/CyclicRoundFlatlist';
+import Screen from '../components/Screen';
 
 const CyclicSessionSummary = () => {
   const params = useLocalSearchParams();
-  console.log(params);
   const { history, isLoading, error } = useGetOneCyclicSessionHistory(Number(params.sessionId));
 
   if (isLoading)
