@@ -35,10 +35,17 @@ export type CyclicSessionHistory = {
 
 const databaseName = 'app.db';
 
-const db: any = SQLite.openDatabase(databaseName);
+export const db: any = SQLite.openDatabase(databaseName);
 
 // Function to create tables and initialize settings
 export const createTables = () => {
+  // db.transaction((tx: SQLite.SQLTransaction) => {
+  //   tx.executeSql(`DROP TABLE IF EXISTS settings;`);
+  //   tx.executeSql(`DROP TABLE IF EXISTS cyclic_history;`);
+  //   tx.executeSql(`DROP TABLE IF EXISTS cyclic_sessions;`);
+  //   tx.executeSql(`DROP TABLE IF EXISTS box_sessions;`);
+  // });
+
   db.transaction(
     (tx: SQLite.SQLTransaction) => {
       tx.executeSql(
@@ -83,7 +90,8 @@ export const createTables = () => {
       tx.executeSql(
         `CREATE TABLE IF NOT EXISTS box_sessions (
           session_id INTEGER PRIMARY KEY NOT NULL,
-         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+         duration INTEGER NOT NULL
         );`
       );
     },
@@ -97,7 +105,7 @@ export const createTables = () => {
 //SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS
 //SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS
 class SettingsDAO {
-  public getSettings(): Promise<Settings> {
+  public async getSettings(): Promise<Settings> {
     return new Promise((resolve, reject) => {
       db.transaction(
         (tx: SQLite.SQLTransaction) => {
@@ -136,7 +144,7 @@ class SettingsDAO {
 //CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS
 //CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS
 class CyclicSessionsDAO {
-  public getAllSessions(): Promise<CyclicSession[]> {
+  public async getAllSessions(): Promise<CyclicSession[]> {
     return new Promise((resolve, reject) => {
       db.transaction(
         (tx: SQLite.SQLTransaction) => {
@@ -152,7 +160,10 @@ class CyclicSessionsDAO {
     });
   }
 
-  public createCyclicSession(noOfBreaths: 30 | 35, noOfRounds: 1 | 2 | 3 | 4 | 5): Promise<number> {
+  public async createCyclicSession(
+    noOfBreaths: 30 | 35,
+    noOfRounds: 1 | 2 | 3 | 4 | 5
+  ): Promise<number> {
     return new Promise((resolve, reject) => {
       db.transaction(
         (tx: SQLite.SQLTransaction) => {
@@ -230,7 +241,11 @@ class CyclicSessionHistoryDAO {
     });
   }
 
-  public createCyclicHistory(sessionId: number, roundNumber: 1 | 2 | 3 | 4 | 5, holdTime: number) {
+  public async createCyclicHistory(
+    sessionId: number,
+    roundNumber: 1 | 2 | 3 | 4 | 5,
+    holdTime: number
+  ) {
     db.transaction(
       (tx: SQLite.SQLTransaction) => {
         // Check if a row with the same session_id and round_number already exists
@@ -258,7 +273,7 @@ class CyclicSessionHistoryDAO {
     );
   }
 
-  public clearAllCyclicHistory() {
+  public async clearAllCyclicHistory() {
     db.transaction(
       (tx: SQLite.SQLTransaction) => {
         tx.executeSql(`DELETE FROM history;`);
@@ -274,7 +289,7 @@ class CyclicSessionHistoryDAO {
 //BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//
 //BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//
 class BoxSessionHistoryDAO {
-  public getAllCBoxHistory(): Promise<BoxSession[]> {
+  public async getAllCBoxHistory(): Promise<BoxSession[]> {
     return new Promise((resolve, reject) => {
       db.transaction(
         (tx: SQLite.SQLTransaction) => {
@@ -292,7 +307,7 @@ class BoxSessionHistoryDAO {
     });
   }
 
-  public createBoxSession(duration: number): Promise<number> {
+  public async createBoxSession(duration: number): Promise<number> {
     return new Promise((res, rej) => {
       db.transaction(
         (tx: SQLite.SQLTransaction) => {

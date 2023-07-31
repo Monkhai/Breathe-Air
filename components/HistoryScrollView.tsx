@@ -72,7 +72,7 @@ const HistoryScrollView = ({ onScrollEnd }: Props) => {
           <AppText fontSize="regular" fontWeight="bold">
             Box Session Animation
           </AppText>
-          {cyclicHistoryData.length > 0 ? (
+          {boxHistoryData.length > 0 ? (
             <BoxHistoryFlatList historyData={boxHistoryData} />
           ) : (
             <View style={styles.noData}>

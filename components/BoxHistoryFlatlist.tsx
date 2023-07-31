@@ -16,9 +16,11 @@ const BoxHistoryFlatList = ({ historyData }: Props) => {
         keyExtractor={(item) => item.session_id.toString()}
         renderItem={({ item: session }) => {
           return (
-            <View style={styles.rowContainer}>
-              <AppText textColor="black">{formatDate(session.created_at)}</AppText>
-              <AppText textColor="black">{formatTime(session.duration)}</AppText>
+            <View style={styles.FlatlistContainer}>
+              <View style={styles.rowContainer}>
+                <AppText textColor="black">{formatDate(session.created_at)}</AppText>
+                <AppText textColor="black">{formatTime(session.duration)}</AppText>
+              </View>
             </View>
           );
         }}
@@ -34,7 +36,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingBottom: 20,
+    paddingVertical: 10,
     marginBottom: 20,
     borderBottomColor: 'rgba(0,0,0,0.15)',
     borderBottomWidth: 1,
