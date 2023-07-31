@@ -1,16 +1,17 @@
+import useGetAllCyclicHistory from '@/hooks/useGetAllCyclicHistory';
+import React, { useState } from 'react';
 import {
   Dimensions,
   NativeScrollEvent,
   NativeSyntheticEvent,
   ScrollView,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
 import AppText from './AppText';
+import BoxHistoryFlatList from './BoxHistoryFlatlist';
 import CyclicHistoryFlatList from './CyclicHistoryFlatList';
-import useGetAllHistory, { SortedSessionHistory } from '@/hooks/useGetAllHistory';
+import useGetAllBoxHistory from '@/hooks/useGetAllBoxHistory';
 
 interface Props {
   onScrollEnd: () => void;
@@ -19,7 +20,12 @@ interface Props {
 const HistoryScrollView = ({ onScrollEnd }: Props) => {
   const [currentPage, setCurrentPage] = useState(0);
   const screenWidth = Dimensions.get('screen').width;
-  const { historyData, isLoading, error } = useGetAllHistory();
+  const {
+    cyclicHistoryData,
+    isLoading: isCyclicDataLoading,
+    error: cyclicError,
+  } = useGetAllCyclicHistory();
+  const { boxHistoryData, isLoading: isBoxDataLoading, error: boxError } = useGetAllBoxHistory();
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const nextPage = Math.round(event.nativeEvent.contentOffset.x / screenWidth);
@@ -29,8 +35,9 @@ const HistoryScrollView = ({ onScrollEnd }: Props) => {
     }
   };
 
-  if (isLoading) return <View />;
-  if (error) return <AppText>{error.message}</AppText>;
+  if (isBoxDataLoading || isCyclicDataLoading) return <View />;
+  if (cyclicError) return <AppText>{cyclicError.message}</AppText>;
+  if (boxError) return <AppText>{boxError.message}</AppText>;
 
   return (
     <ScrollView
@@ -53,8 +60,8 @@ const HistoryScrollView = ({ onScrollEnd }: Props) => {
           <AppText fontSize="regular" fontWeight="bold">
             Cyclic Session Animation
           </AppText>
-          {historyData.length > 0 ? (
-            <CyclicHistoryFlatList historyData={historyData} />
+          {cyclicHistoryData.length > 0 ? (
+            <CyclicHistoryFlatList historyData={cyclicHistoryData} />
           ) : (
             <View style={styles.noData}>
               <AppText>No data yet...</AppText>
@@ -65,8 +72,8 @@ const HistoryScrollView = ({ onScrollEnd }: Props) => {
           <AppText fontSize="regular" fontWeight="bold">
             Box Session Animation
           </AppText>
-          {historyData.length > 0 ? (
-            <CyclicHistoryFlatList historyData={historyData} />
+          {cyclicHistoryData.length > 0 ? (
+            <BoxHistoryFlatList historyData={boxHistoryData} />
           ) : (
             <View style={styles.noData}>
               <AppText>No data yet...</AppText>

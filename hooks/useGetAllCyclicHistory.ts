@@ -11,9 +11,9 @@ export type SortedSessionHistory = {
   rounds: Round[];
 };
 
-const useGetAllHistory = () => {
+const useGetAllCyclicHistory = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [historyData, setHistoryData] = useState<SortedSessionHistory[]>([]);
+  const [cyclicHistoryData, setCyclicHistoryData] = useState<SortedSessionHistory[]>([]);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const useGetAllHistory = () => {
           (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
         );
 
-        setHistoryData(sortedData);
+        setCyclicHistoryData(sortedData);
         setIsLoading(false);
       } catch (error: any) {
         const e = error as Error;
@@ -59,7 +59,7 @@ const useGetAllHistory = () => {
     fetchHistory();
   }, []);
 
-  return { isLoading, historyData, error };
+  return { isLoading, cyclicHistoryData, error };
 };
 
-export default useGetAllHistory;
+export default useGetAllCyclicHistory;

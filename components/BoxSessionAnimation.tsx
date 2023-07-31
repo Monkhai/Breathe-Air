@@ -6,6 +6,7 @@ import LottieView from 'lottie-react-native';
 
 interface Props {
   isCountdown: boolean;
+  trigger: boolean;
   onCountdownFinish: (isCancelled: boolean) => void;
   animRef: RefObject<LottieView>;
 }

@@ -274,7 +274,7 @@ class CyclicSessionHistoryDAO {
 //BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//
 //BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//
 class BoxSessionHistoryDAO {
-  public async getAllCBoxHistory(): Promise<BoxSession[]> {
+  public getAllCBoxHistory(): Promise<BoxSession[]> {
     return new Promise((resolve, reject) => {
       db.transaction(
         (tx: SQLite.SQLTransaction) => {
@@ -287,6 +287,24 @@ class BoxSessionHistoryDAO {
         (error: Error) => {
           console.error(`Error occurred while getting all session history: ${error}`);
           reject(error);
+        }
+      );
+    });
+  }
+
+  public createBoxSession(duration: number): Promise<number> {
+    return new Promise((res, rej) => {
+      db.transaction(
+        (tx: SQLite.SQLTransaction) => {
+          tx.executeSql(
+            `INSERT INTO box_sessions (duration) VALUES (?);`,
+            [duration],
+            (_, resultSet) => res(resultSet.insertId!)
+          );
+        },
+        (error: Error) => {
+          console.error(`Error occurred while creating a new box session: ${error}`);
+          rej(error);
         }
       );
     });

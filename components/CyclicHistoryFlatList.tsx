@@ -1,6 +1,6 @@
 import React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
-import { SortedSessionHistory } from '../hooks/useGetAllHistory';
+import { SortedSessionHistory } from '../hooks/useGetAllCyclicHistory';
 import { formatDate, formatTime } from '../services/timeFormators';
 import AppText from './AppText';
 
