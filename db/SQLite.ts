@@ -362,5 +362,43 @@ class BoxSessionHistoryDAO {
       );
     });
   }
+
+  public async getAverageBoxHoldTime(): Promise<number | null> {
+    return new Promise((resolve, reject) => {
+      db.transaction((tx: SQLite.SQLTransaction) => {
+        tx.executeSql(
+          `SELECT AVG(duration) AS average_duration FROM box_sessions;`,
+          [],
+          (_, { rows }) => {
+            const maxSessionTime = rows.length > 0 ? rows._array[0].average_hold_time : null;
+            resolve(maxSessionTime);
+          }
+        ),
+          (error: Error) => {
+            console.error(`Error occurred while getting the average hold time: ${error}`);
+            reject(error);
+          };
+      });
+    });
+  }
+
+  public async getMaxBoxHoldTime(): Promise<number | null> {
+    return new Promise((resolve, reject) => {
+      db.transaction((tx: SQLite.SQLTransaction) => {
+        tx.executeSql(
+          `SELECT MAX(duration) AS max_duration FROM box_sessions;`,
+          [],
+          (_, { rows }) => {
+            const maxSessionTime = rows.length > 0 ? rows._array[0].max_hold_time : null;
+            resolve(maxSessionTime);
+          }
+        ),
+          (error: Error) => {
+            console.error(`Error occurred while getting the average hold time: ${error}`);
+            reject(error);
+          };
+      });
+    });
+  }
 }
 export { SettingsDAO, CyclicSessionsDAO, CyclicSessionHistoryDAO, BoxSessionHistoryDAO };
