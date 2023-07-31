@@ -1,13 +1,14 @@
 import { router } from 'expo-router';
 import LottieView from 'lottie-react-native';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, StyleSheet, View } from 'react-native';
 import AppButton from '../components/AppButton';
 import AppText from '../components/AppText';
 import CyclicSessionAnimation from '../components/CyclicSessionAnimation';
 import Screen from '../components/Screen';
 import Stopwatch from '../components/Stopwatch';
-import { SessionHistoryDAO, SessionsDAO, SettingsDAO } from '../db/SQLite';
+import { CyclicSessionHistoryDAO, CyclicSessionsDAO, SettingsDAO } from '../db/SQLite';
+import useGetSettings from '@/hooks/useGetSettings';
 
 const INITIAL_INHALE_SECONDS = 15;
 const INITIAL_EXHALE_SECONDS = 0;
@@ -17,15 +18,13 @@ const INITIAL_ANIMATED_TEXT = 0;
 const CyclicSessionScreen = () => {
   //---------DAO//---------DAO//---------DAO//---------DAO//---------DAO//---------DAO//---------DAO//---------DAO//---------DAO
   //---------DAO//---------DAO//---------DAO//---------DAO//---------DAO//---------DAO//---------DAO//---------DAO//---------DAO
-  const dbSession = new SessionsDAO();
-  const dbSessionHistory = new SessionHistoryDAO();
-  const dbSettings = new SettingsDAO();
+  const dbSession = new CyclicSessionsDAO();
+  const dbSessionHistory = new CyclicSessionHistoryDAO();
 
   //-------STATES-------STATES-------STATES-------STATES-------STATES-------STATES-------STATES-------STATES-------STATES
   //-------STATES-------STATES-------STATES-------STATES-------STATES-------STATES-------STATES-------STATES-------STATES
   const [isCountdown, setIsCountdown] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
-  const [isFinished, setIsFinished] = useState(false);
   const [isStopwatchRunning, setIsStopwatchRunning] = useState(false);
   const [exhaleSeconds, setExhaleSeconds] = useState(INITIAL_EXHALE_SECONDS);
   const [inhaleSeconds, setInhaleSeconds] = useState(INITIAL_INHALE_SECONDS);
@@ -35,22 +34,25 @@ const CyclicSessionScreen = () => {
   const [guideText, setGuideText] = useState('Get ready...');
   const [noOfRounds, setNoOfRounds] = useState<1 | 2 | 3 | 4 | 5>();
   const [noOfBreaths, setNoOfBreaths] = useState<30 | 35>();
-  const [settingsLoaded, setSettingsLoaded] = useState(false);
-  const [sessionId, setSessionId] = useState<number>();
+  const sessionId = useRef<number>();
   const animatedText = useRef(new Animated.Value(INITIAL_ANIMATED_TEXT)).current;
   const animRef = useRef<LottieView>(null);
   let CYCLIC_TIMEOUT = useRef<NodeJS.Timeout | null>(null);
-
-  const claculateFrameRate = () => {
-    if (noOfBreaths === 30) {
-      return 5164;
-    } else return 6048;
-  };
-  const frameRate = claculateFrameRate();
-  const CYCLIC_ANIMATION_TRIGGER_POINT = Math.round((frameRate / 60) * 1000);
-
+  const { settings, isLoading, error } = useGetSettings();
   //-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT
   //-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT
+  useEffect(() => {
+    if (settings) {
+      setNoOfBreaths(settings.no_of_breaths);
+      setNoOfRounds(settings.no_of_rounds);
+      dbSession
+        .createCyclicSession(settings.no_of_breaths, settings.no_of_rounds)
+        .then((id: number) => {
+          console.log(`this isthe id: ${id}`);
+          sessionId.current = id;
+        });
+    }
+  }, [settings]);
 
   useEffect(() => {
     if (isPaused) {
@@ -62,20 +64,9 @@ const CyclicSessionScreen = () => {
 
   useEffect(() => {
     if (inhaleSeconds === 0 && roundIndex === noOfRounds) {
-      resetAll();
+      finishSession();
     }
   }, [inhaleSeconds, roundIndex]);
-
-  useEffect(() => {
-    dbSettings.getSettings().then((s) => {
-      setNoOfRounds(s.no_of_rounds);
-      setNoOfBreaths(s.no_of_breaths);
-      dbSession
-        .createCyclicSession(s.no_of_breaths, s.no_of_rounds)
-        .then((sessionId: number) => setSessionId(sessionId));
-      setSettingsLoaded(true);
-    });
-  }, []);
 
   useEffect(() => {
     return () => clearTimeout(CYCLIC_TIMEOUT.current!);
@@ -131,6 +122,9 @@ const CyclicSessionScreen = () => {
 
   //-------FUNCTIONS-------FUNCTIONS-------FUNCTIONS-------FUNCTIONS-------FUNCTIONS-------FUNCTIONS-------FUNCTIONS-------FUNCTIONS-------FUNCTIONS
   //-------FUNCTIONS-------FUNCTIONS-------FUNCTIONS-------FUNCTIONS-------FUNCTIONS-------FUNCTIONS-------FUNCTIONS-------FUNCTIONS-------FUNCTIONS
+
+  const FRAME_RATE = Math.round((5164 / 60) * 1000);
+
   const handlePause = () => {
     setIsPaused(true);
     setIsStopwatchRunning(false);
@@ -141,25 +135,15 @@ const CyclicSessionScreen = () => {
     setIsStopwatchRunning(true);
   };
 
-  const resetAll = () => {
-    setIsExhaleStopwatchActive(false);
-    setIsInhaleStopwatchActive(false);
-    setExhaleSeconds(INITIAL_EXHALE_SECONDS);
-    setInhaleSeconds(INITIAL_INHALE_SECONDS);
-    setRoundIndex(INITIAL_ROUND_INDEX);
-    // setIsPaused(true);
-    setIsFinished(true);
-    setGuideText('');
+  const finishSession = () => {
+    router.push({ pathname: '/CyclicSessionSummary', params: { sessionId: sessionId.current! } });
   };
   const handleCountdownFinish = useCallback((isCancelled: boolean) => {
     if (isCancelled) return;
     setGuideText('Take deep, coninuous breathes');
     setIsCountdown(false);
     clearTimeout(CYCLIC_TIMEOUT.current!);
-    CYCLIC_TIMEOUT.current! = setTimeout(
-      announceCyclicAboutToFinish,
-      CYCLIC_ANIMATION_TRIGGER_POINT
-    );
+    CYCLIC_TIMEOUT.current! = setTimeout(announceCyclicAboutToFinish, FRAME_RATE);
   }, []);
 
   const announceCyclicAboutToFinish = () => {
@@ -175,7 +159,7 @@ const CyclicSessionScreen = () => {
   }, []);
 
   const startInhale = () => {
-    dbSessionHistory.createCyclicHistory(sessionId!, roundIndex, exhaleSeconds);
+    dbSessionHistory.createCyclicHistory(sessionId.current!, roundIndex, exhaleSeconds);
     setExhaleSeconds(0);
     setInhaleSeconds(15);
     setIsExhaleStopwatchActive(false);
@@ -202,6 +186,14 @@ const CyclicSessionScreen = () => {
   //----------------------------------------------------------------------------------------------------------------------------------------------------------
   //----------------------------------------------------------------------------------------------------------------------------------------------------------
 
+  if (isLoading)
+    return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}></View>;
+  if (error)
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <AppText>{error.message}</AppText>
+      </View>
+    );
   return (
     <Screen>
       <View style={styles.container}>
@@ -213,13 +205,7 @@ const CyclicSessionScreen = () => {
           )}
         </View>
         <View style={styles.lottieContainer}>
-          {isFinished ? (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-              <AppText fontSize="xxl" fontWeight="bold">
-                Finished!
-              </AppText>
-            </View>
-          ) : isExhaleStopwatchActive || isInhaleStopwatchActive ? (
+          {isExhaleStopwatchActive || isInhaleStopwatchActive ? (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
               <Stopwatch
                 animatedText={animatedText!}
@@ -231,11 +217,11 @@ const CyclicSessionScreen = () => {
             </View>
           ) : (
             <CyclicSessionAnimation
+              index={roundIndex}
               noOfBreaths={noOfBreaths!}
               isCountdown={isCountdown}
               onCountdownFinish={handleCountdownFinish}
               onCyclicFinish={handleCyclicFinish}
-              // setAnimRef={setAnimRef}
               animRef={animRef}
             />
           )}
@@ -246,22 +232,16 @@ const CyclicSessionScreen = () => {
           </AppText>
         </View>
         <View style={styles.bottomControllers}>
-          {isExhaleStopwatchActive && (
+          {isExhaleStopwatchActive && !isPaused && (
             <AppButton fontSize="large" fontWeight="regular" onPress={startInhale}>
               Inhale
             </AppButton>
           )}
-          {isFinished ||
-            (isPaused && (
-              <AppButton
-                disabled={!settingsLoaded}
-                fontSize="regular"
-                fontWeight="regular"
-                onPress={() => router.back()}
-              >
-                Finish session
-              </AppButton>
-            ))}
+          {isPaused && (
+            <AppButton fontSize="large" fontWeight="regular" onPress={finishSession}>
+              Finish session
+            </AppButton>
+          )}
         </View>
       </View>
     </Screen>

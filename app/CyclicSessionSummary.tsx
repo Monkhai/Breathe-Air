@@ -3,34 +3,41 @@ import { StyleSheet, View } from 'react-native';
 import AppButton from '../components/AppButton';
 import CyclicRoundFlatlist, { RoundData } from '../components/CyclicRoundFlatlist';
 import Screen from '../components/Screen';
-import useGetOnSessionHistory from '../hooks/useGetOneCyclicSessionHistory';
 import AppText from '../components/AppText';
+import useGetOneCyclicSessionHistory from '@/hooks/useGetOneCyclicSessionHistory';
+import { router, useLocalSearchParams } from 'expo-router';
+import { CyclicSessionHistoryDAO } from '@/db/SQLite';
 
-interface Props {
-  sessionId: number;
-}
+const CyclicSessionSummary = () => {
+  const params = useLocalSearchParams();
+  console.log(params);
+  const { history, isLoading, error } = useGetOneCyclicSessionHistory(Number(params.sessionId));
 
-const CyclicSessionSummary = ({ sessionId }: Props) => {
-  const [roundData, setRoundData] = useState<RoundData[]>();
+  if (isLoading)
+    return (
+      <Screen>
+        <View />
+      </Screen>
+    );
 
-  useEffect(() => {
-    useGetOnSessionHistory(sessionId).then((data) => setRoundData(data));
-  }, []);
+  if (error)
+    return (
+      <Screen>
+        <View style={styles.container}>
+          <AppText>{error.message}</AppText>
+        </View>
+      </Screen>
+    );
 
-  if (!roundData) return <AppText>Sorry you need to wait</AppText>;
   return (
     <Screen>
       <View style={styles.container}>
         <View style={styles.topControllers}></View>
         <View style={styles.midSpaceContainer}>
-          <CyclicRoundFlatlist roundData={roundData} />
+          <CyclicRoundFlatlist roundData={history!} />
         </View>
         <View style={styles.bottomControllers}>
-          <AppButton
-            fontSize="regular"
-            fontWeight="regular"
-            onPress={() => console.log('I cannot do anything')}
-          >
+          <AppButton fontSize="regular" fontWeight="regular" onPress={() => router.push('/')}>
             Finish session
           </AppButton>
         </View>

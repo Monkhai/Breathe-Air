@@ -6,11 +6,11 @@ import cyclic35 from '../assets/animations/cyclic-35.json';
 import cyclicCountdown from '../assets/animations/cyclic-breathing-countdown.json';
 
 interface Props {
+  index: number;
   isCountdown: boolean;
   noOfBreaths: 30 | 35;
   onCountdownFinish: (isCancelled: boolean) => void;
   onCyclicFinish: (isCancelled: boolean) => void;
-  // setAnimRef: (Ref: RefObject<LottieView>) => void;
   animRef: RefObject<LottieView>;
 }
 
@@ -19,21 +19,14 @@ const CyclicSessionAnimation = ({
   noOfBreaths,
   onCountdownFinish,
   onCyclicFinish,
-  // setAnimRef,
   animRef,
 }: Props) => {
-  // const animRef = useRef<LottieView>(null);
-
-  // useEffect(() => {
-  //   setAnimRef(animRef);
-  // }, []);
-
   return (
     <View>
       {isCountdown ? (
         <LottieView
           ref={animRef}
-          imageAssetsFolder="../assets"
+          speed={15}
           source={cyclicCountdown}
           autoPlay
           loop={false}
@@ -42,9 +35,9 @@ const CyclicSessionAnimation = ({
         />
       ) : (
         <LottieView
-          source={noOfBreaths === 30 ? cyclic30 : cyclic35}
-          imageAssetsFolder="../assets"
+          speed={15}
           ref={animRef}
+          source={noOfBreaths === 30 ? cyclic30 : cyclic35}
           autoPlay
           loop={false}
           onAnimationFinish={(isCancelled) => onCyclicFinish(isCancelled)}

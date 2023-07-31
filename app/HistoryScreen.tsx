@@ -6,6 +6,7 @@ import AppButton from '../components/AppButton';
 import AppText from '../components/AppText';
 import Screen from '../components/Screen';
 import PageIndicator from '@/components/PageIndicator';
+import { CyclicSessionHistoryDAO, CyclicSessionsDAO } from '@/db/SQLite';
 
 const HistoryScreen = () => {
   const [page, setPage] = useState<1 | 2>(1);

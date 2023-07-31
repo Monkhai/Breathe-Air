@@ -18,7 +18,7 @@ const CyclicHistoryFlatList = ({ historyData }: Props) => {
           return (
             <View style={styles.FlatlistContainer}>
               <View style={styles.headingCountainer}>
-                <AppText fontSize="large">{formatDate(session.timestamp)}</AppText>
+                <AppText fontSize="regular">{formatDate(session.timestamp)}</AppText>
               </View>
               {session.rounds.map((round) => {
                 return (
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     borderBottomColor: 'rgba(0,0,0,0.15)',
     borderBottomWidth: 1,
   },
-  headingCountainer: { paddingBottom: 20 },
+  headingCountainer: { paddingBottom: 20, paddingTop: 10 },
   rowContainer: {
     flex: 1,
     flexDirection: 'row',

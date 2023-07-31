@@ -35,7 +35,7 @@ const RoundSelector = ({ selectedRound, setSelectedRound }: Props) => {
       Animated.timing(animatedSelector, {
         toValue: INDICATOR_POSITIONS[round - 1],
         useNativeDriver: false,
-        duration: 300,
+        duration: 500,
       }).start(() => triggerHeavyHaptics());
     }
     if (round == 2 && round !== selectedRound) {
@@ -43,7 +43,7 @@ const RoundSelector = ({ selectedRound, setSelectedRound }: Props) => {
       Animated.timing(animatedSelector, {
         toValue: INDICATOR_POSITIONS[round - 1],
         useNativeDriver: false,
-        duration: 300,
+        duration: 500,
       }).start(() => triggerHeavyHaptics());
     }
     if (round == 3 && round !== selectedRound) {
@@ -51,7 +51,7 @@ const RoundSelector = ({ selectedRound, setSelectedRound }: Props) => {
       Animated.timing(animatedSelector, {
         toValue: INDICATOR_POSITIONS[round - 1],
         useNativeDriver: false,
-        duration: 300,
+        duration: 500,
       }).start(() => triggerHeavyHaptics());
     }
     if (round == 4 && round !== selectedRound) {
@@ -59,7 +59,7 @@ const RoundSelector = ({ selectedRound, setSelectedRound }: Props) => {
       Animated.timing(animatedSelector, {
         toValue: INDICATOR_POSITIONS[round - 1],
         useNativeDriver: false,
-        duration: 300,
+        duration: 500,
       }).start(() => triggerHeavyHaptics());
     }
     if (round == 5 && round !== selectedRound) {
@@ -67,7 +67,7 @@ const RoundSelector = ({ selectedRound, setSelectedRound }: Props) => {
       Animated.timing(animatedSelector, {
         toValue: INDICATOR_POSITIONS[round - 1],
         useNativeDriver: false,
-        duration: 300,
+        duration: 500,
       }).start(() => triggerHeavyHaptics());
     }
   };

@@ -135,6 +135,22 @@ class SettingsDAO {
 //CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS
 //CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS
 class CyclicSessionsDAO {
+  public getAllSessions(): Promise<CyclicSession[]> {
+    return new Promise((resolve, reject) => {
+      db.transaction(
+        (tx: SQLite.SQLTransaction) => {
+          tx.executeSql(`SELECT * FROM cyclic_sessions;`, [], (_, { rows: { _array } }) =>
+            resolve(_array)
+          );
+        },
+        (error: Error) => {
+          console.error(`Error occurred while reading settings: ${error}`);
+          reject(error);
+        }
+      );
+    });
+  }
+
   public createCyclicSession(noOfBreaths: 30 | 35, noOfRounds: 1 | 2 | 3 | 4 | 5): Promise<number> {
     return new Promise((resolve, reject) => {
       db.transaction(

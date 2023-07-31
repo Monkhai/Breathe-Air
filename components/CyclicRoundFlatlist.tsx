@@ -1,6 +1,8 @@
 import { Dimensions, FlatList, StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import AppText from './AppText';
+import { CyclicHistory } from '@/db/SQLite';
+import { formatTime } from '@/services/timeFormators';
 
 export interface RoundData {
   round: number;
@@ -8,7 +10,7 @@ export interface RoundData {
 }
 
 interface Props {
-  roundData: RoundData[];
+  roundData: CyclicHistory[];
 }
 
 const CyclicRoundFlatlist = ({ roundData }: Props) => {
@@ -22,11 +24,11 @@ const CyclicRoundFlatlist = ({ roundData }: Props) => {
       <FlatList
         scrollEnabled={false}
         data={roundData}
-        keyExtractor={(round) => round.round.toString()}
-        renderItem={(item) => (
+        keyExtractor={(round) => round.id.toString()}
+        renderItem={({ item }) => (
           <View style={styles.round}>
-            <AppText textColor="black">Round {item.item.round}</AppText>
-            <AppText textColor="black">{item.item.hold}</AppText>
+            <AppText textColor="black">Round {item.round_number}</AppText>
+            <AppText textColor="black">{formatTime(item.hold_time)}</AppText>
           </View>
         )}
       />

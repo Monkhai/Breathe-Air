@@ -1,13 +1,27 @@
-import { CyclicSessionHistoryDAO } from '../db/SQLite';
+import { useEffect, useState } from 'react';
+import { CyclicHistory, CyclicSessionHistoryDAO } from '../db/SQLite';
 
 const dbHistory = new CyclicSessionHistoryDAO();
-const useGetOnSessionHistory = async (sessionId: number) => {
-  const data = await dbHistory.getOneCyclicSessionHistory(sessionId);
-  const roundData = data.map((round) => ({
-    round: round.round_number,
-    hold: round.hold_time,
-  }));
-  return roundData;
+const useGetOneCyclicSessionHistory = (sessionId: number) => {
+  const [history, setHistory] = useState<CyclicHistory[]>();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    dbHistory
+      .getOneCyclicSessionHistory(sessionId)
+      .then((session) => {
+        setHistory(session);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        const e = error as Error;
+        setError(e);
+        setIsLoading(false);
+      });
+  }, []);
+
+  return { history, isLoading, error };
 };
 
-export default useGetOnSessionHistory;
+export default useGetOneCyclicSessionHistory;

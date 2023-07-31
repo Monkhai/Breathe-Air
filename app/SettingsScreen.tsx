@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 import AppButton from '../components/AppButton';
 import AppText from '../components/AppText';
@@ -15,31 +15,30 @@ const SettingsScreen = () => {
 
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [noOfRounds, setNoOfRounds] = useState<1 | 2 | 3 | 4 | 5>(3);
-  const [noOfBreaths, setNoOfBreaths] = useState<30 | 35>(30);
+  const [noOfBreaths, setNoOfBreaths] = useState<30 | 35>();
   const [OGSettings, setOGSettings] = useState<Settings>();
-
-  const setSettings = (settings: Settings) => {
-    setTheme(settings.theme);
-    setNoOfBreaths(settings.no_of_breaths);
-    setNoOfRounds(settings.no_of_rounds);
-  };
+  const { settings, isLoading, error } = useGetSettings();
+  const isSaved = useRef<Boolean>();
 
   useEffect(() => {
-    useGetSettings().then((settings) => {
-      setSettings(settings);
+    if (settings) {
+      setTheme(settings.theme);
+      setNoOfRounds(settings.no_of_rounds);
+      setNoOfBreaths(settings.no_of_breaths);
       setOGSettings(settings);
-    });
-  }, []);
+    }
+  }, [settings]);
 
   const saveSettings = () => {
-    dbSettings.updateSettings(theme, noOfBreaths, noOfRounds);
+    dbSettings.updateSettings(theme, noOfBreaths!, noOfRounds);
+    isSaved.current = true;
   };
 
   const handleBack = () => {
     if (
-      OGSettings?.no_of_breaths !== noOfBreaths ||
-      OGSettings?.no_of_rounds !== noOfRounds ||
-      OGSettings?.theme !== theme
+      (!isSaved.current && OGSettings?.no_of_breaths !== noOfBreaths) ||
+      (!isSaved.current && OGSettings?.no_of_rounds !== noOfRounds) ||
+      (!isSaved.current && OGSettings?.theme !== theme)
     ) {
       Alert.alert('Wait!', 'would you like to save the changes that you made?', [
         {
@@ -62,6 +61,27 @@ const SettingsScreen = () => {
       router.back();
     }
   };
+  if (error) return <AppText>{error.message}</AppText>;
+
+  if (isLoading)
+    return (
+      <Screen>
+        <View style={styles.container}>
+          <View style={styles.topControllers}>
+            <AppButton icon="chevron-back" onPress={handleBack}>
+              Home
+            </AppButton>
+          </View>
+          <View style={styles.topSpaceContainer}>
+            <AppText fontSize="xl" fontWeight="bold">
+              Settings
+            </AppText>
+          </View>
+          <View style={styles.midSpaceContainer} />
+          <View style={styles.bottomControllers} />
+        </View>
+      </Screen>
+    );
 
   return (
     <Screen>
@@ -81,7 +101,7 @@ const SettingsScreen = () => {
             <AppText fontSize="large">Cyclic Breathing</AppText>
             <View style={styles.verticalContainer}>
               <AppText textColor="blue">Breaths per round</AppText>
-              <BreathsPerRoundPicker noOfBreaths={noOfBreaths} setNoOfBreaths={setNoOfBreaths} />
+              <BreathsPerRoundPicker noOfBreaths={noOfBreaths!} setNoOfBreaths={setNoOfBreaths} />
             </View>
             <View style={styles.verticalContainer}>
               <AppText textColor="blue">Rounds per session</AppText>

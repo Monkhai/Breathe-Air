@@ -17,15 +17,9 @@ interface Props {
 }
 
 const HistoryScrollView = ({ onScrollEnd }: Props) => {
-  const [historyData, setHistoryData] = useState<SortedSessionHistory[]>();
   const [currentPage, setCurrentPage] = useState(0);
   const screenWidth = Dimensions.get('screen').width;
-
-  useEffect(() => {
-    useGetAllHistory().then((history) => setHistoryData(history));
-  }, []);
-
-  if (!historyData) return <AppText>Sorry bro</AppText>;
+  const { historyData, isLoading, error } = useGetAllHistory();
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const nextPage = Math.round(event.nativeEvent.contentOffset.x / screenWidth);
@@ -34,6 +28,9 @@ const HistoryScrollView = ({ onScrollEnd }: Props) => {
       onScrollEnd();
     }
   };
+
+  if (isLoading) return <View />;
+  if (error) return <AppText>{error.message}</AppText>;
 
   return (
     <ScrollView

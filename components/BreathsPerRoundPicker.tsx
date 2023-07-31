@@ -5,7 +5,7 @@ import * as Haptics from 'expo-haptics';
 
 interface Props {
   noOfBreaths: 30 | 35;
-  setNoOfBreaths: React.Dispatch<React.SetStateAction<30 | 35>>;
+  setNoOfBreaths: React.Dispatch<React.SetStateAction<30 | 35 | undefined>>;
 }
 
 const BreathsPerRoundPicker = ({ noOfBreaths, setNoOfBreaths }: Props) => {
