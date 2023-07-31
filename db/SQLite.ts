@@ -283,6 +283,44 @@ class CyclicSessionHistoryDAO {
       }
     );
   }
+
+  public async getAverageCyclicHoldTime(): Promise<number | null> {
+    return new Promise((resolve, reject) => {
+      db.transaction((tx: SQLite.SQLTransaction) => {
+        tx.executeSql(
+          `SELECT AVG(hold_time) AS average_hold_time FROM cyclic_history;`,
+          [],
+          (_, { rows }) => {
+            const averageHoldTime = rows.length > 0 ? rows._array[0].average_hold_time : null;
+            resolve(averageHoldTime);
+          }
+        ),
+          (error: Error) => {
+            console.error(`Error occurred while getting the average hold time: ${error}`);
+            reject(error);
+          };
+      });
+    });
+  }
+
+  public async getMaxCyclicHoldTime(): Promise<number | null> {
+    return new Promise((resolve, reject) => {
+      db.transaction((tx: SQLite.SQLTransaction) => {
+        tx.executeSql(
+          `SELECT MAX(hold_time) AS max_hold_time FROM cyclic_history;`,
+          [],
+          (_, { rows }) => {
+            const maxHoldTime = rows.length > 0 ? rows._array[0].max_hold_time : null;
+            resolve(maxHoldTime);
+          }
+        ),
+          (error: Error) => {
+            console.error(`Error occurred while getting the average hold time: ${error}`);
+            reject(error);
+          };
+      });
+    });
+  }
 }
 
 //BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//
