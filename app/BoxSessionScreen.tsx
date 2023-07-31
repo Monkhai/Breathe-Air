@@ -116,14 +116,12 @@ const styles = StyleSheet.create({
   },
   lottieContainer: {
     flex: 8,
-    borderWidth: 1,
   },
   midSpaceContainer: {
     flex: 8,
     justifyContent: 'flex-start',
     alignItems: 'center',
     width: '80%',
-    borderWidth: 1,
   },
   bottomControllers: {
     flex: 1.2,
