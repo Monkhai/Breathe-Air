@@ -34,8 +34,6 @@ const HomeScreen = () => {
     }
   };
 
-  console.log(boxMax, boxAverage, cyclicAverage, cyclicMax);
-
   if (boxError) return <AppText>{boxError.message}</AppText>;
   if (cyclicError) return <AppText>{cyclicError.message}</AppText>;
 
