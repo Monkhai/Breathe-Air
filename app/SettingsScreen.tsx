@@ -111,7 +111,7 @@ const SettingsScreen = () => {
           <View style={styles.categoryContainer}>
             <AppText fontSize="large">Theme</AppText>
             <View style={styles.verticalContainer}>
-              <AppText textColor="blue">Dark mode</AppText>
+              <AppText textColor="blue">Color scheme</AppText>
               <ThemeSwitch setTheme={setTheme} theme={theme} />
             </View>
           </View>
