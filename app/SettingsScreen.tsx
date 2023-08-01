@@ -109,11 +109,11 @@ const SettingsScreen = () => {
             </View>
           </View>
           <View style={styles.categoryContainer}>
-            <AppText fontSize="large">Theme</AppText>
+            {/* <AppText fontSize="large">Theme</AppText>
             <View style={styles.verticalContainer}>
               <AppText textColor="blue">Color scheme</AppText>
               <ThemeSwitch setTheme={setTheme} theme={theme} />
-            </View>
+            </View> */}
           </View>
         </View>
         <View style={styles.bottomControllers}>
