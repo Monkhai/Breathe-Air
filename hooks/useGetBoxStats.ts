@@ -10,7 +10,7 @@ const useGetBoxStats = () => {
   useEffect(() => {
     const dbBoxSession = new BoxSessionHistoryDAO();
     Promise.all([dbBoxSession.getAverageBoxHoldTime(), dbBoxSession.getMaxBoxHoldTime()])
-      .then(([maxResult, averageResult]) => {
+      .then(([averageResult, maxResult]) => {
         setMax(maxResult);
         setAverage(averageResult);
         setIsloading(false);

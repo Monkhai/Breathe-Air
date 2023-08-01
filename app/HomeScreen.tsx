@@ -1,18 +1,19 @@
+import AppText from '@/components/AppText';
+import useGetBoxStats from '@/hooks/useGetBoxStats';
+import useGetCyclicStats from '@/hooks/useGetCyclicStats';
+import { router } from 'expo-router';
 import LottieView from 'lottie-react-native';
-import { RefObject, useState } from 'react';
+import { RefObject, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import AppButton from '../components/AppButton';
 import BreathPicker from '../components/BreathPicker';
 import HomeScreenTransitionAnimation from '../components/HomeScreenTransitionAnimation';
 import Screen from '../components/Screen';
-import { router } from 'expo-router';
-import useGetCyclicStats from '@/hooks/useGetCyclicStats';
-import useGetBoxStats from '@/hooks/useGetBoxStats';
-import AppText from '@/components/AppText';
 
 const HomeScreen = () => {
   const [isBox, setIsBox] = useState(false);
   const [animRef, setAnimRef] = useState<RefObject<LottieView>>();
+
   const {
     average: cyclicAverage,
     max: cyclicMax,

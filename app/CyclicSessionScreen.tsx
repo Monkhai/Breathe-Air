@@ -149,7 +149,7 @@ const CyclicSessionScreen = () => {
             Alert.alert('Save session', 'would you like to save the session before you leave?', [
               {
                 text: 'Yes',
-                onPress: () => router.push('/'),
+                onPress: () => router.replace('/'),
               },
               {
                 text: 'No',
@@ -157,7 +157,7 @@ const CyclicSessionScreen = () => {
                   const dbCyclicSession = new CyclicSessionsDAO();
                   dbCyclicSession
                     .deleteCyclicSession(sessionId.current!)
-                    .then(() => router.push('/'))
+                    .then(() => router.replace('/'))
                     .catch((error) => console.log(error));
                 },
               },

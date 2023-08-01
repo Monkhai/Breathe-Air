@@ -56,7 +56,7 @@ const BoxSessionScreen = () => {
 
   const finishSession = () => {
     dbBoxSession.createBoxSession(Stopwatch).then(() => {
-      router.push('/');
+      router.replace('/');
     });
   };
 
