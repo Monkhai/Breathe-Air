@@ -22,7 +22,12 @@ const ThemeSwitch = ({ theme, setTheme }: Props) => {
 
   const backgroundColor = animatedSelector.interpolate({
     inputRange: INDICATOR_POSITIONS,
-    outputRange: [colors.primary, colors.darkTheme.black],
+    outputRange: [colors.primary, colors.darkTheme.primary],
+  });
+
+  const indicatorColor = animatedSelector.interpolate({
+    inputRange: INDICATOR_POSITIONS,
+    outputRange: [colors.background, colors.darkTheme.background],
   });
 
   // Create opacity animations
@@ -59,23 +64,28 @@ const ThemeSwitch = ({ theme, setTheme }: Props) => {
     <View style={styles.container}>
       <TouchableWithoutFeedback onPressIn={triggerLightHaptics} onPress={() => trigger(true)}>
         <Animated.View style={[styles.container, { backgroundColor: backgroundColor }]}>
-          <Animated.View style={[styles.selectedIndicator, { left: animatedSelector }]} />
+          <Animated.View
+            style={[
+              styles.selectedIndicator,
+              { left: animatedSelector, backgroundColor: indicatorColor },
+            ]}
+          />
 
           <View>
             <Animated.View style={{ opacity: lightOpacity }}>
               <Ionicons name="sunny-outline" size={30} color={colors.primary} />
             </Animated.View>
             <Animated.View style={{ opacity: darkOpacity, position: 'absolute' }}>
-              <Ionicons name="sunny-outline" size={30} color={colors.darkTheme.white} />
+              <Ionicons name="sunny-outline" size={30} color={colors.darkTheme.background} />
             </Animated.View>
           </View>
 
           <View>
             <Animated.View style={{ opacity: lightOpacity }}>
-              <Ionicons name="moon" size={30} color={colors.white} />
+              <Ionicons name="moon" size={30} color={colors.background} />
             </Animated.View>
             <Animated.View style={{ opacity: darkOpacity, position: 'absolute' }}>
-              <Ionicons name="moon" size={30} color={colors.darkTheme.black} />
+              <Ionicons name="moon" size={30} color={colors.darkTheme.primary} />
             </Animated.View>
           </View>
         </Animated.View>
@@ -100,6 +110,5 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 50,
-    backgroundColor: 'white',
   },
 });

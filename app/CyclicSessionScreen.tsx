@@ -260,7 +260,7 @@ const CyclicSessionScreen = () => {
           )}
         </View>
         <View style={styles.midSpaceContainer}>
-          <AppText fontWeight="light" textColor="black">
+          <AppText fontWeight="light" textColor="tertiary">
             {guideText}
           </AppText>
         </View>

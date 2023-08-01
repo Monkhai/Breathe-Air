@@ -76,7 +76,7 @@ const RoundSelector = ({ selectedRound, setSelectedRound }: Props) => {
         onPress={() => toggleNumber(1)}
       >
         <View style={styles.textContainer}>
-          <AppText textColor={selectedRound == 1 ? 'blue' : 'white'}>1</AppText>
+          <AppText textColor={selectedRound == 1 ? 'primary' : 'background'}>1</AppText>
         </View>
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback
@@ -84,7 +84,7 @@ const RoundSelector = ({ selectedRound, setSelectedRound }: Props) => {
         onPress={() => toggleNumber(2)}
       >
         <View style={styles.textContainer}>
-          <AppText textColor={selectedRound == 2 ? 'blue' : 'white'}>2</AppText>
+          <AppText textColor={selectedRound == 2 ? 'primary' : 'background'}>2</AppText>
         </View>
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback
@@ -92,7 +92,7 @@ const RoundSelector = ({ selectedRound, setSelectedRound }: Props) => {
         onPress={() => toggleNumber(3)}
       >
         <View style={styles.textContainer}>
-          <AppText textColor={selectedRound == 3 ? 'blue' : 'white'}>3</AppText>
+          <AppText textColor={selectedRound == 3 ? 'primary' : 'background'}>3</AppText>
         </View>
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback
@@ -100,7 +100,7 @@ const RoundSelector = ({ selectedRound, setSelectedRound }: Props) => {
         onPress={() => toggleNumber(4)}
       >
         <View style={styles.textContainer}>
-          <AppText textColor={selectedRound == 4 ? 'blue' : 'white'}>4</AppText>
+          <AppText textColor={selectedRound == 4 ? 'primary' : 'background'}>4</AppText>
         </View>
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback
@@ -108,7 +108,7 @@ const RoundSelector = ({ selectedRound, setSelectedRound }: Props) => {
         onPress={() => toggleNumber(5)}
       >
         <View style={styles.textContainer}>
-          <AppText textColor={selectedRound == 5 ? 'blue' : 'white'}>5</AppText>
+          <AppText textColor={selectedRound == 5 ? 'primary' : 'background'}>5</AppText>
         </View>
       </TouchableWithoutFeedback>
     </View>

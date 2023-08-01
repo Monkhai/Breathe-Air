@@ -18,8 +18,8 @@ const BoxHistoryFlatList = ({ historyData }: Props) => {
           return (
             <View style={styles.FlatlistContainer}>
               <View style={styles.rowContainer}>
-                <AppText textColor="black">{formatDate(session.created_at)}</AppText>
-                <AppText textColor="black">{formatTime(session.duration)}</AppText>
+                <AppText textColor="tertiary">{formatDate(session.created_at)}</AppText>
+                <AppText textColor="tertiary">{formatTime(session.duration)}</AppText>
               </View>
             </View>
           );

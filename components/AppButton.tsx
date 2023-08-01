@@ -29,14 +29,7 @@ const AppButton = ({
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         onPress();
       }}
-      style={{
-        height: 48,
-        minHeight: 48,
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingHorizontal: 10,
-      }}
+      style={styles.container}
     >
       {icon && <IonIcons name={icon as any} color={colors.primary} size={20} />}
       <AppText fontSize={fontSize} fontWeight={fontWeight}>
@@ -48,4 +41,13 @@ const AppButton = ({
 
 export default AppButton;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    height: 48,
+    minHeight: 48,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+  },
+});

@@ -7,12 +7,12 @@ import fontSizes from '../services/fontSizes';
 interface Props extends TextProps {
   fontWeight?: 'regular' | 'bold' | 'thin' | 'light';
   fontSize?: 'small' | 'regular' | 'large' | 'xl' | 'xxl' | 'xxxl' | 'xxxxl';
-  textColor?: 'black' | 'white' | 'blue';
+  textColor?: 'tertiary' | 'primary' | 'background';
   children?: ReactNode;
 }
 
 const AppText = ({
-  textColor = 'blue',
+  textColor = 'primary',
   fontWeight = 'regular',
   children = '',
   fontSize = 'small',
@@ -47,10 +47,10 @@ const AppText = ({
         fontFamily: fontFamilyMap[fontWeight],
         fontSize: fontSizeMap[fontSize],
         color:
-          textColor == 'black'
-            ? colors.black
-            : textColor == 'white'
-            ? colors.white
+          textColor == 'tertiary'
+            ? colors.tertiary
+            : textColor == 'background'
+            ? colors.background
             : colors.primary,
       }}
     >

@@ -100,18 +100,18 @@ const SettingsScreen = () => {
           <View style={styles.categoryContainer}>
             <AppText fontSize="large">Cyclic Breathing</AppText>
             <View style={styles.verticalContainer}>
-              <AppText textColor="blue">Breaths per round</AppText>
+              <AppText>Breaths per round</AppText>
               <BreathsPerRoundPicker noOfBreaths={noOfBreaths!} setNoOfBreaths={setNoOfBreaths} />
             </View>
             <View style={styles.verticalContainer}>
-              <AppText textColor="blue">Rounds per session</AppText>
+              <AppText>Rounds per session</AppText>
               <RoundSelector selectedRound={noOfRounds} setSelectedRound={setNoOfRounds} />
             </View>
           </View>
           <View style={styles.categoryContainer}>
             <AppText fontSize="large">Theme</AppText>
             <View style={styles.verticalContainer}>
-              <AppText textColor="blue">Color scheme</AppText>
+              <AppText>Color scheme</AppText>
               <ThemeSwitch setTheme={setTheme} theme={theme} />
             </View>
           </View>

@@ -27,8 +27,8 @@ const CyclicRoundFlatlist = ({ roundData }: Props) => {
         keyExtractor={(round) => round.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.round}>
-            <AppText textColor="black">Round {item.round_number}</AppText>
-            <AppText textColor="black">{formatTime(item.hold_time)}</AppText>
+            <AppText textColor="tertiary">Round {item.round_number}</AppText>
+            <AppText textColor="tertiary">{formatTime(item.hold_time)}</AppText>
           </View>
         )}
       />

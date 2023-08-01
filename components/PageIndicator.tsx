@@ -14,7 +14,7 @@ const PageIndicator = ({ page }: Props) => {
           borderRadius: 100,
           width: 8,
           height: 8,
-          backgroundColor: page === 1 ? colors.primary : colors.white,
+          backgroundColor: page === 1 ? colors.primary : colors.background,
         }}
       />
       <View
@@ -22,7 +22,7 @@ const PageIndicator = ({ page }: Props) => {
           borderRadius: 100,
           width: 8,
           height: 8,
-          backgroundColor: page === 2 ? colors.primary : colors.white,
+          backgroundColor: page === 2 ? colors.primary : colors.background,
         }}
       />
     </View>

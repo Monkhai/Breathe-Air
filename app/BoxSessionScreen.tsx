@@ -82,7 +82,7 @@ const BoxSessionScreen = () => {
           <View style={{ paddingBottom: 50, paddingTop: 30 }}>
             <AppText fontSize="xl">{formatTime(Stopwatch)}</AppText>
           </View>
-          <AppText textColor="black" fontWeight="light">
+          <AppText textColor="tertiary" fontWeight="light">
             Press pause to leave the session at any time
           </AppText>
         </View>
