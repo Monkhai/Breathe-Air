@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   container: {
     width: 48,
     height: 24,
-    backgroundColor: colors.contranst,
+    backgroundColor: colors.secondary,
     borderRadius: 50,
     justifyContent: 'space-evenly',
     alignItems: 'center',
