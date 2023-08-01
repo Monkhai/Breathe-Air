@@ -1,3 +1,5 @@
+import { BoxSessionHistoryDAO } from '@/db/SQLite';
+import { formatTime } from '@/services/timeFormators';
 import { router } from 'expo-router';
 import LottieView from 'lottie-react-native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -6,8 +8,6 @@ import AppButton from '../components/AppButton';
 import AppText from '../components/AppText';
 import BoxSessionAnimation from '../components/BoxSessionAnimation';
 import Screen from '../components/Screen';
-import { formatTime } from '@/services/timeFormators';
-import { BoxSessionHistoryDAO } from '@/db/SQLite';
 
 const BoxSessionScreen = () => {
   const [isPaused, setIsPaused] = useState(false);
@@ -16,6 +16,7 @@ const BoxSessionScreen = () => {
   const [trigger, setTrigger] = useState(false);
   const [Stopwatch, setStopwatch] = useState<number>(0);
   const dbBoxSession = new BoxSessionHistoryDAO();
+
   useEffect(() => {
     if (isPaused) {
       animRef?.current?.pause();
