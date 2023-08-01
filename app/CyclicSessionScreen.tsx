@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
 import LottieView from 'lottie-react-native';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, StyleSheet, View } from 'react-native';
+import { Alert, Animated, StyleSheet, View } from 'react-native';
 import AppButton from '../components/AppButton';
 import AppText from '../components/AppText';
 import CyclicSessionAnimation from '../components/CyclicSessionAnimation';
@@ -137,6 +137,40 @@ const CyclicSessionScreen = () => {
   const finishSession = () => {
     router.push({ pathname: '/CyclicSessionSummary', params: { sessionId: sessionId.current! } });
   };
+
+  const handleLeaveSession = () => {
+    Alert.alert(
+      'Leave session',
+      'Your session is not finished. Are you sure you would like to leave?',
+      [
+        {
+          text: 'Yes',
+          onPress: () => {
+            Alert.alert('Save session', 'would you like to save the session before you leave?', [
+              {
+                text: 'Yes',
+                onPress: () => router.push('/'),
+              },
+              {
+                text: 'No',
+                onPress: () => {
+                  const dbCyclicSession = new CyclicSessionsDAO();
+                  dbCyclicSession
+                    .deleteCyclicSession(sessionId.current!)
+                    .then(() => router.push('/'))
+                    .catch((error) => console.log(error));
+                },
+              },
+            ]);
+          },
+        },
+        {
+          text: 'No',
+        },
+      ]
+    );
+  };
+
   const handleCountdownFinish = useCallback((isCancelled: boolean) => {
     if (isCancelled) return;
     setGuideText('Take deep, coninuous breathes');
@@ -237,8 +271,8 @@ const CyclicSessionScreen = () => {
             </AppButton>
           )}
           {isPaused && (
-            <AppButton fontSize="large" fontWeight="regular" onPress={finishSession}>
-              Finish session
+            <AppButton fontSize="large" fontWeight="regular" onPress={handleLeaveSession}>
+              Leave session
             </AppButton>
           )}
         </View>

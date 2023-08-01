@@ -33,7 +33,7 @@ export default PageIndicator;
 
 const styles = StyleSheet.create({
   container: {
-    width: 64,
+    width: 48,
     height: 24,
     backgroundColor: colors.contranst,
     borderRadius: 50,

@@ -191,6 +191,51 @@ class CyclicSessionsDAO {
       }
     );
   }
+
+  public async deleteCyclicSession(sessionId: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      db.transaction(
+        (tx: SQLite.SQLTransaction) => {
+          // Delete cyclic history records associated with the session
+          tx.executeSql(
+            `DELETE FROM cyclic_history WHERE session_id = ?;`,
+            [sessionId],
+            (_, resultSet) => {
+              // Check if any rows were deleted from cyclic_history
+              const rowsAffected = resultSet.rowsAffected;
+              if (rowsAffected > 0) {
+                console.log(
+                  `Successfully deleted cyclic history for session with ID ${sessionId}.`
+                );
+              } else {
+                console.log(`No cyclic history found for session with ID ${sessionId}.`);
+              }
+
+              // Delete the cyclic session record
+              tx.executeSql(
+                `DELETE FROM cyclic_sessions WHERE session_id = ?;`,
+                [sessionId],
+                (_, resultSet) => {
+                  // Check if any rows were deleted from cyclic_sessions
+                  const rowsAffected = resultSet.rowsAffected;
+                  if (rowsAffected > 0) {
+                    console.log(`Successfully deleted cyclic session with ID ${sessionId}.`);
+                  } else {
+                    console.log(`No cyclic session found with ID ${sessionId}.`);
+                  }
+                }
+              );
+            }
+          );
+          resolve();
+        },
+        (error: Error) => {
+          console.error(`Error occurred while deleting cyclic session: ${error}`);
+          reject(error);
+        }
+      );
+    });
+  }
 }
 
 //CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//

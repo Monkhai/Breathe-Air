@@ -26,7 +26,6 @@ const CyclicSessionAnimation = ({
       {isCountdown ? (
         <LottieView
           ref={animRef}
-          speed={15}
           source={cyclicCountdown}
           autoPlay
           loop={false}
@@ -35,7 +34,6 @@ const CyclicSessionAnimation = ({
         />
       ) : (
         <LottieView
-          speed={15}
           ref={animRef}
           source={noOfBreaths === 30 ? cyclic30 : cyclic35}
           autoPlay
