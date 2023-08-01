@@ -1,7 +1,6 @@
-import { Animated, StyleSheet, Text, View } from 'react-native';
-import React, { useEffect, useRef, useState } from 'react';
-import { TouchableWithoutFeedback } from 'react-native';
 import * as Haptics from 'expo-haptics';
+import React, { useRef } from 'react';
+import { Animated, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import AppText from './AppText';
 
 interface Props {

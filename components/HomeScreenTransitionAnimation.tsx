@@ -63,7 +63,7 @@ const HomeScreenTransitionAnimation = ({
       />
       <View style={styles.textContainer}>
         {!isBox && (
-          <Animated.View style={{ opacity: fadeCircleText }}>
+          <Animated.View style={{ opacity: fadeCircleText, gap: 10 }}>
             <AppText fontSize="large" fontWeight="bold">
               All Time Record
             </AppText>
@@ -91,7 +91,7 @@ const HomeScreenTransitionAnimation = ({
           </Animated.View>
         )}
         {isBox && (
-          <Animated.View style={{ opacity: fadeBoxText }}>
+          <Animated.View style={{ opacity: fadeBoxText, gap: 10 }}>
             <AppText fontSize="large" fontWeight="bold">
               Longest Session
             </AppText>
