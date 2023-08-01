@@ -17,10 +17,6 @@ const RoundSelector = ({ selectedRound, setSelectedRound }: Props) => {
     new Animated.Value(INDICATOR_POSITIONS[selectedRound - 1])
   ).current;
 
-  useEffect(() => {
-    animatedSelector.setValue(INDICATOR_POSITIONS[selectedRound - 1]);
-  }, [selectedRound]);
-
   const triggerHeavyHaptics = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
   };
@@ -35,7 +31,7 @@ const RoundSelector = ({ selectedRound, setSelectedRound }: Props) => {
       Animated.timing(animatedSelector, {
         toValue: INDICATOR_POSITIONS[round - 1],
         useNativeDriver: false,
-        duration: 500,
+        duration: 300,
       }).start(() => triggerHeavyHaptics());
     }
     if (round == 2 && round !== selectedRound) {
@@ -43,7 +39,7 @@ const RoundSelector = ({ selectedRound, setSelectedRound }: Props) => {
       Animated.timing(animatedSelector, {
         toValue: INDICATOR_POSITIONS[round - 1],
         useNativeDriver: false,
-        duration: 500,
+        duration: 300,
       }).start(() => triggerHeavyHaptics());
     }
     if (round == 3 && round !== selectedRound) {
@@ -51,7 +47,7 @@ const RoundSelector = ({ selectedRound, setSelectedRound }: Props) => {
       Animated.timing(animatedSelector, {
         toValue: INDICATOR_POSITIONS[round - 1],
         useNativeDriver: false,
-        duration: 500,
+        duration: 300,
       }).start(() => triggerHeavyHaptics());
     }
     if (round == 4 && round !== selectedRound) {
@@ -59,7 +55,7 @@ const RoundSelector = ({ selectedRound, setSelectedRound }: Props) => {
       Animated.timing(animatedSelector, {
         toValue: INDICATOR_POSITIONS[round - 1],
         useNativeDriver: false,
-        duration: 500,
+        duration: 300,
       }).start(() => triggerHeavyHaptics());
     }
     if (round == 5 && round !== selectedRound) {
@@ -67,7 +63,7 @@ const RoundSelector = ({ selectedRound, setSelectedRound }: Props) => {
       Animated.timing(animatedSelector, {
         toValue: INDICATOR_POSITIONS[round - 1],
         useNativeDriver: false,
-        duration: 500,
+        duration: 300,
       }).start(() => triggerHeavyHaptics());
     }
   };

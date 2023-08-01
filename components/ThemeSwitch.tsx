@@ -18,7 +18,7 @@ const ThemeSwitch = ({ theme, setTheme }: Props) => {
 
   useEffect(() => {
     animatedSelector.setValue(INDICATOR_POSITIONS[theme == 'light' ? 0 : 1]);
-  });
+  }, []);
 
   const backgroundColor = animatedSelector.interpolate({
     inputRange: INDICATOR_POSITIONS,

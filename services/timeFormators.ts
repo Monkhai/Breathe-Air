@@ -26,7 +26,7 @@ export const formatTime = (seconds: number): string => {
   const remainingSeconds = seconds % 60;
 
   const minutesStr = minutes.toString().padStart(2, '0');
-  const secondsStr = remainingSeconds.toString().padStart(2, '0');
+  const secondsStr = remainingSeconds.toFixed(0).toString().padStart(2, '0');
 
   return `${minutesStr}:${secondsStr}`;
 };
