@@ -150,6 +150,10 @@ const CyclicSessionScreen = () => {
         {
           text: 'Yes',
           onPress: () => {
+            if (isCountdown) {
+              router.replace('/');
+              return;
+            }
             Alert.alert('Save session', 'would you like to save the session before you leave?', [
               {
                 text: 'Yes',
@@ -239,7 +243,6 @@ const CyclicSessionScreen = () => {
           ) : (
             <AppButton onPress={handleContinue}>Continue</AppButton>
           )}
-          <AppText>{roundIndex}</AppText>
         </View>
         <View style={styles.lottieContainer}>
           {isExhaleStopwatchActive || isInhaleStopwatchActive ? (

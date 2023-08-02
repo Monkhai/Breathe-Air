@@ -53,7 +53,7 @@ const CyclicSessionAnimation = ({
           autoPlay
           loop={false}
           onAnimationFinish={(isCancelled) => onCyclicFinish(isCancelled)}
-          style={styles.lottie}
+          style={[styles.lottie, shadowStyle]}
         />
       )}
     </View>

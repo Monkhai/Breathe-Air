@@ -1,10 +1,11 @@
-import { Animated, Dimensions, StyleSheet, Text, View } from 'react-native';
+import { Animated, Dimensions, StyleSheet, Text, View, useColorScheme } from 'react-native';
 import React, { RefObject, useEffect, useRef } from 'react';
 import AppText from './AppText';
 import LottieView from 'lottie-react-native';
 import transition from '../assets/animations/transition.json';
 import transitionDark from '@/assets/animations/dark/Transition-dark.json';
 import { formatTime } from '@/services/timeFormators';
+import colors from '@/services/colors';
 
 interface Props {
   setAnimRef: (animRef: RefObject<LottieView>) => void;
@@ -32,6 +33,9 @@ const HomeScreenTransitionAnimation = ({
   const animRef = useRef<LottieView>(null);
   const fadeCircleText = useRef(new Animated.Value(0)).current;
   const fadeBoxText = useRef(new Animated.Value(0)).current;
+  const colorScheme = useColorScheme();
+
+  const shadowStyle = colorScheme === 'light' ? styles.shadowLight : styles.shadowDark;
 
   const fadeIn = (text: Animated.Value) => {
     Animated.timing(text, {
@@ -62,7 +66,7 @@ const HomeScreenTransitionAnimation = ({
         source={theme === 'light' ? transition : transitionDark}
         loop={false}
         autoPlay={false}
-        style={styles.lottie}
+        style={[styles.lottie, shadowStyle]}
       />
       <View style={styles.textContainer}>
         {!isBox && (
@@ -184,6 +188,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 10,
+  },
+  shadowLight: {
+    shadowColor: 'black',
+  },
+  shadowDark: {
+    shadowColor: colors.dark.primary,
   },
   textContainer: {
     justifyContent: 'center',
