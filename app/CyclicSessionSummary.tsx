@@ -1,15 +1,18 @@
 import useGetOneCyclicSessionHistory from '@/hooks/useGetOneCyclicSessionHistory';
 import { router, useLocalSearchParams } from 'expo-router';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, useColorScheme } from 'react-native';
 import AppButton from '../components/AppButton';
 import AppText from '../components/AppText';
 import CyclicRoundFlatlist from '../components/CyclicRoundFlatlist';
 import Screen from '../components/Screen';
+import colors from '@/services/colors';
 
 const CyclicSessionSummary = () => {
   const params = useLocalSearchParams();
   const { history, isLoading, error } = useGetOneCyclicSessionHistory(Number(params.sessionId));
+  const colorScheme = useColorScheme();
+  const containerStyle = colorScheme === 'light' ? styles.containerLight : styles.containerDark;
 
   if (isLoading)
     return (
@@ -21,7 +24,7 @@ const CyclicSessionSummary = () => {
   if (error)
     return (
       <Screen>
-        <View style={styles.container}>
+        <View style={[styles.container, containerStyle]}>
           <AppText>{error.message}</AppText>
         </View>
       </Screen>
@@ -29,13 +32,13 @@ const CyclicSessionSummary = () => {
 
   return (
     <Screen>
-      <View style={styles.container}>
+      <View style={[styles.container, containerStyle]}>
         <View style={styles.topControllers}></View>
         <View style={styles.midSpaceContainer}>
           <CyclicRoundFlatlist roundData={history!} />
         </View>
         <View style={styles.bottomControllers}>
-          <AppButton fontSize="regular" fontWeight="regular" onPress={() => router.push('/')}>
+          <AppButton fontSize="regular" fontWeight="regular" onPress={() => router.replace('/')}>
             Finish session
           </AppButton>
         </View>
@@ -49,9 +52,14 @@ export default CyclicSessionSummary;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'flex-start',
+  },
+  containerLight: {
+    backgroundColor: colors.light.background,
+  },
+  containerDark: {
+    backgroundColor: colors.dark.background,
   },
   topControllers: {
     flexDirection: 'row',

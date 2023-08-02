@@ -1,8 +1,9 @@
-import { StyleSheet, Text, TextProps, View } from 'react-native';
+import { StyleSheet, Text, TextProps, View, useColorScheme } from 'react-native';
 import React, { ReactNode } from 'react';
 import { useGetFonts } from '../services/useGetFonts';
-import colors from '../services/colors';
 import fontSizes from '../services/fontSizes';
+import useGetTheme from '../services/colors';
+import colors from '../services/colors';
 
 interface Props extends TextProps {
   fontWeight?: 'regular' | 'bold' | 'thin' | 'light';
@@ -19,6 +20,7 @@ const AppText = ({
   ...otherProps
 }: Props) => {
   const { fonts, fontsLoaded } = useGetFonts();
+  const colorScheme = useColorScheme();
 
   const fontFamilyMap = {
     regular: fonts?.regular,
@@ -47,11 +49,17 @@ const AppText = ({
         fontFamily: fontFamilyMap[fontWeight],
         fontSize: fontSizeMap[fontSize],
         color:
-          textColor == 'tertiary'
-            ? colors.tertiary
-            : textColor == 'background'
-            ? colors.background
-            : colors.primary,
+          colorScheme === 'light'
+            ? textColor === 'background'
+              ? colors.light.background
+              : textColor === 'tertiary'
+              ? colors.light.tertiary
+              : colors.light.primary
+            : textColor === 'background'
+            ? colors.dark.background
+            : textColor === 'tertiary'
+            ? colors.dark.tertiary
+            : colors.dark.primary,
       }}
     >
       {children}

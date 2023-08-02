@@ -1,13 +1,18 @@
 import HistoryScrollView from '@/components/HistoryScrollView';
 import PageIndicator from '@/components/PageIndicator';
+import useGetTheme from '@/services/colors';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, useColorScheme } from 'react-native';
 import AppButton from '../components/AppButton';
 import AppText from '../components/AppText';
 import Screen from '../components/Screen';
+import colors from '@/services/colors';
 
 const HistoryScreen = () => {
+  const colorScheme = useColorScheme();
+  const containerStyle = colorScheme === 'light' ? styles.containerLight : styles.containerDark;
+
   const [page, setPage] = useState<1 | 2>(1);
 
   const handleScrollEnd = () => {
@@ -21,7 +26,7 @@ const HistoryScreen = () => {
 
   return (
     <Screen>
-      <View style={styles.container}>
+      <View style={[styles.container, containerStyle]}>
         <View style={styles.topControllers}>
           <AppButton icon="chevron-back" onPress={() => router.back()}>
             Home
@@ -51,6 +56,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'flex-start',
+  },
+  containerLight: {
+    backgroundColor: colors.light.background,
+  },
+  containerDark: {
+    backgroundColor: colors.dark.background,
   },
   topControllers: {
     flexDirection: 'row',

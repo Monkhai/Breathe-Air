@@ -1,9 +1,8 @@
-import { Animated, StyleSheet, View } from 'react-native';
-import React, { useEffect, useRef, useState } from 'react';
-import { TouchableWithoutFeedback } from 'react-native';
-import * as Haptics from 'expo-haptics';
+import colors from '@/services/colors';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import colors from '../services/colors';
+import * as Haptics from 'expo-haptics';
+import React, { useEffect, useRef } from 'react';
+import { Animated, StyleSheet, TouchableWithoutFeedback, View, useColorScheme } from 'react-native';
 
 interface Props {
   theme: 'light' | 'dark';
@@ -11,6 +10,8 @@ interface Props {
 }
 
 const ThemeSwitch = ({ theme, setTheme }: Props) => {
+  const colorScheme = useColorScheme();
+
   const INDICATOR_POSITIONS = [5.333333333333333, 54.666666666666664];
   const animatedSelector = useRef(
     new Animated.Value(INDICATOR_POSITIONS[theme == 'light' ? 0 : 1])
@@ -22,12 +23,18 @@ const ThemeSwitch = ({ theme, setTheme }: Props) => {
 
   const backgroundColor = animatedSelector.interpolate({
     inputRange: INDICATOR_POSITIONS,
-    outputRange: [colors.primary, colors.darkTheme.primary],
+    outputRange:
+      colorScheme === 'light'
+        ? [colors.light.primary, colors.light.primary]
+        : [colors.dark.primary, colors.dark.primary],
   });
 
   const indicatorColor = animatedSelector.interpolate({
     inputRange: INDICATOR_POSITIONS,
-    outputRange: [colors.background, colors.darkTheme.background],
+    outputRange:
+      colorScheme === 'light'
+        ? [colors.light.background, colors.light.background]
+        : [colors.dark.background, colors.dark.background],
   });
 
   // Create opacity animations
@@ -73,19 +80,35 @@ const ThemeSwitch = ({ theme, setTheme }: Props) => {
 
           <View>
             <Animated.View style={{ opacity: lightOpacity }}>
-              <Ionicons name="sunny-outline" size={30} color={colors.primary} />
+              <Ionicons
+                name="sunny-outline"
+                size={30}
+                color={colorScheme === 'light' ? colors.light.primary : colors.dark.primary}
+              />
             </Animated.View>
             <Animated.View style={{ opacity: darkOpacity, position: 'absolute' }}>
-              <Ionicons name="sunny-outline" size={30} color={colors.darkTheme.background} />
+              <Ionicons
+                name="sunny-outline"
+                size={30}
+                color={colorScheme === 'light' ? colors.light.background : colors.dark.background}
+              />
             </Animated.View>
           </View>
 
           <View>
             <Animated.View style={{ opacity: lightOpacity }}>
-              <Ionicons name="moon" size={30} color={colors.background} />
+              <Ionicons
+                name="moon"
+                size={30}
+                color={colorScheme === 'light' ? colors.light.background : colors.dark.background}
+              />
             </Animated.View>
             <Animated.View style={{ opacity: darkOpacity, position: 'absolute' }}>
-              <Ionicons name="moon" size={30} color={colors.darkTheme.primary} />
+              <Ionicons
+                name="moon"
+                size={30}
+                color={colorScheme === 'light' ? colors.light.background : colors.dark.background}
+              />
             </Animated.View>
           </View>
         </Animated.View>

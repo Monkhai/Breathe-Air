@@ -1,14 +1,19 @@
 import { BoxSession } from '@/db/SQLite';
 import React from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View, useColorScheme } from 'react-native';
 import { formatDate, formatTime } from '../services/timeFormators';
 import AppText from './AppText';
+import colors from '@/services/colors';
 
 interface Props {
   historyData: BoxSession[];
 }
 
 const BoxHistoryFlatList = ({ historyData }: Props) => {
+  const colorScheme = useColorScheme();
+  const flatlistContainerStyle =
+    colorScheme === 'light' ? styles.flatlistContainerLight : styles.flatlistContainerDark;
+
   return (
     <View>
       <FlatList
@@ -16,7 +21,7 @@ const BoxHistoryFlatList = ({ historyData }: Props) => {
         keyExtractor={(item) => item.session_id.toString()}
         renderItem={({ item: session }) => {
           return (
-            <View style={styles.FlatlistContainer}>
+            <View style={[styles.flatlistContainer, flatlistContainerStyle]}>
               <View style={styles.rowContainer}>
                 <AppText textColor="tertiary">{formatDate(session.created_at)}</AppText>
                 <AppText textColor="tertiary">{formatTime(session.duration)}</AppText>
@@ -32,14 +37,19 @@ const BoxHistoryFlatList = ({ historyData }: Props) => {
 export default BoxHistoryFlatList;
 
 const styles = StyleSheet.create({
-  FlatlistContainer: {
+  flatlistContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 10,
     marginBottom: 20,
-    borderBottomColor: 'rgba(0,0,0,0.15)',
     borderBottomWidth: 1,
+  },
+  flatlistContainerLight: {
+    borderColor: colors.light.divider,
+  },
+  flatlistContainerDark: {
+    borderColor: colors.dark.divider,
   },
   rowContainer: {
     flex: 1,

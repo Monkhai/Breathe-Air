@@ -1,9 +1,9 @@
-import React, { ReactNode } from 'react';
-import { StyleSheet, TouchableOpacity, TouchableOpacityProps } from 'react-native';
-import AppText from './AppText';
-import * as Haptics from 'expo-haptics';
-import colors from '../services/colors';
 import IonIcons from '@expo/vector-icons/Ionicons';
+import * as Haptics from 'expo-haptics';
+import React, { ReactNode } from 'react';
+import { StyleSheet, TouchableOpacity, TouchableOpacityProps, useColorScheme } from 'react-native';
+import AppText from './AppText';
+import colors from '@/services/colors';
 
 interface Props extends TouchableOpacityProps {
   fontWeight?: 'regular' | 'bold' | 'thin' | 'light';
@@ -21,6 +21,8 @@ const AppButton = ({
   onPress,
   ...otherProps
 }: Props) => {
+  const colorScheme = useColorScheme();
+
   return (
     <TouchableOpacity
       {...otherProps}
@@ -31,7 +33,13 @@ const AppButton = ({
       }}
       style={styles.container}
     >
-      {icon && <IonIcons name={icon as any} color={colors.primary} size={20} />}
+      {icon && (
+        <IonIcons
+          name={icon as any}
+          color={colorScheme === 'light' ? colors.light.primary : colors.dark.primary}
+          size={20}
+        />
+      )}
       <AppText fontSize={fontSize} fontWeight={fontWeight}>
         {children}
       </AppText>

@@ -3,6 +3,7 @@ import React, { RefObject, useEffect, useRef } from 'react';
 import AppText from './AppText';
 import LottieView from 'lottie-react-native';
 import transition from '../assets/animations/transition.json';
+import transitionDark from '@/assets/animations/dark/Transition-dark.json';
 import { formatTime } from '@/services/timeFormators';
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
   boxAverage: number | null;
   boxMax: number | null;
   isBoxLoading: boolean;
+  theme: 'light' | 'dark';
 }
 
 const HomeScreenTransitionAnimation = ({
@@ -25,6 +27,7 @@ const HomeScreenTransitionAnimation = ({
   boxAverage,
   boxMax,
   isBoxLoading,
+  theme,
 }: Props) => {
   const animRef = useRef<LottieView>(null);
   const fadeCircleText = useRef(new Animated.Value(0)).current;
@@ -56,7 +59,7 @@ const HomeScreenTransitionAnimation = ({
     <View>
       <LottieView
         ref={animRef}
-        source={transition}
+        source={theme === 'light' ? transition : transitionDark}
         loop={false}
         autoPlay={false}
         style={styles.lottie}
@@ -64,27 +67,51 @@ const HomeScreenTransitionAnimation = ({
       <View style={styles.textContainer}>
         {!isBox && (
           <Animated.View style={{ opacity: fadeCircleText, gap: 10 }}>
-            <AppText fontSize="large" fontWeight="bold">
+            <AppText
+              fontSize="large"
+              fontWeight="bold"
+              textColor={theme === 'dark' ? 'background' : 'primary'}
+            >
               All Time Record
             </AppText>
             {isCyclicLoading ? (
-              <AppText fontSize="regular" fontWeight="light">
+              <AppText
+                fontSize="regular"
+                fontWeight="light"
+                textColor={theme === 'dark' ? 'background' : 'primary'}
+              >
                 Loading...
               </AppText>
             ) : (
-              <AppText fontSize="regular" fontWeight="light">
+              <AppText
+                fontSize="regular"
+                fontWeight="light"
+                textColor={theme === 'dark' ? 'background' : 'primary'}
+              >
                 {cyclicMax ? formatTime(cyclicMax) : 'not available'}
               </AppText>
             )}
-            <AppText fontSize="large" fontWeight="bold">
+            <AppText
+              fontSize="large"
+              fontWeight="bold"
+              textColor={theme === 'dark' ? 'background' : 'primary'}
+            >
               Average Hold Time
             </AppText>
             {isCyclicLoading ? (
-              <AppText fontSize="regular" fontWeight="light">
+              <AppText
+                fontSize="regular"
+                fontWeight="light"
+                textColor={theme === 'dark' ? 'background' : 'primary'}
+              >
                 Loading...
               </AppText>
             ) : (
-              <AppText fontSize="regular" fontWeight="light">
+              <AppText
+                fontSize="regular"
+                fontWeight="light"
+                textColor={theme === 'dark' ? 'background' : 'primary'}
+              >
                 {cyclicAverage ? formatTime(cyclicAverage) : 'not available'}
               </AppText>
             )}
@@ -92,27 +119,51 @@ const HomeScreenTransitionAnimation = ({
         )}
         {isBox && (
           <Animated.View style={{ opacity: fadeBoxText, gap: 10 }}>
-            <AppText fontSize="large" fontWeight="bold">
+            <AppText
+              fontSize="large"
+              fontWeight="bold"
+              textColor={theme === 'dark' ? 'background' : 'primary'}
+            >
               Longest Session
             </AppText>
             {isBoxLoading ? (
-              <AppText fontSize="regular" fontWeight="light">
+              <AppText
+                fontSize="regular"
+                fontWeight="light"
+                textColor={theme === 'dark' ? 'background' : 'primary'}
+              >
                 Loading...
               </AppText>
             ) : (
-              <AppText fontSize="regular" fontWeight="light">
+              <AppText
+                fontSize="regular"
+                fontWeight="light"
+                textColor={theme === 'dark' ? 'background' : 'primary'}
+              >
                 {boxMax ? formatTime(boxMax) : 'not available'}
               </AppText>
             )}
-            <AppText fontSize="large" fontWeight="bold">
+            <AppText
+              fontSize="large"
+              fontWeight="bold"
+              textColor={theme === 'dark' ? 'background' : 'primary'}
+            >
               Average Session
             </AppText>
             {isBoxLoading ? (
-              <AppText fontSize="regular" fontWeight="light">
+              <AppText
+                fontSize="regular"
+                fontWeight="light"
+                textColor={theme === 'dark' ? 'background' : 'primary'}
+              >
                 Loading...
               </AppText>
             ) : (
-              <AppText fontSize="regular" fontWeight="light">
+              <AppText
+                fontSize="regular"
+                fontWeight="light"
+                textColor={theme === 'dark' ? 'background' : 'primary'}
+              >
                 {boxAverage ? formatTime(boxAverage) : 'not available'}
               </AppText>
             )}

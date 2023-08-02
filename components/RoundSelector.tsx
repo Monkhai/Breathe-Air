@@ -1,6 +1,7 @@
+import colors from '@/services/colors';
 import * as Haptics from 'expo-haptics';
 import React, { useRef } from 'react';
-import { Animated, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import { Animated, StyleSheet, TouchableWithoutFeedback, View, useColorScheme } from 'react-native';
 import AppText from './AppText';
 
 interface Props {
@@ -9,6 +10,11 @@ interface Props {
 }
 
 const RoundSelector = ({ selectedRound, setSelectedRound }: Props) => {
+  const colorScheme = useColorScheme();
+  const containerStyle = colorScheme === 'light' ? styles.containerLight : styles.containerDark;
+  const selectedIndicatorStyle =
+    colorScheme === 'light' ? styles.selectedIndicatorLight : styles.selectedIndicatorDark;
+
   const INDICATOR_POSITIONS = [
     5.666666666666667, 55.333333333333336, 105, 154.66666666666666, 204.33333333333334,
   ];
@@ -68,8 +74,10 @@ const RoundSelector = ({ selectedRound, setSelectedRound }: Props) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Animated.View style={[styles.selectedIndicator, { left: animatedSelector }]} />
+    <View style={[styles.container, containerStyle]}>
+      <Animated.View
+        style={[styles.selectedIndicator, selectedIndicatorStyle, { left: animatedSelector }]}
+      />
 
       <TouchableWithoutFeedback
         onPressIn={() => triggerLightHaptics(1)}
@@ -122,17 +130,27 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
-    backgroundColor: '#246BA0',
     width: 250,
     height: 48,
     borderRadius: 50,
+  },
+  containerLight: {
+    backgroundColor: colors.light.primary,
+  },
+  containerDark: {
+    backgroundColor: colors.dark.primary,
   },
   selectedIndicator: {
     position: 'absolute',
     width: 40,
     height: 40,
     borderRadius: 50,
-    backgroundColor: 'white',
+  },
+  selectedIndicatorLight: {
+    backgroundColor: colors.light.background,
+  },
+  selectedIndicatorDark: {
+    backgroundColor: colors.dark.background,
   },
   textContainer: {
     minWidth: 48,

@@ -1,18 +1,22 @@
 import AppText from '@/components/AppText';
 import useGetBoxStats from '@/hooks/useGetBoxStats';
 import useGetCyclicStats from '@/hooks/useGetCyclicStats';
-import { router } from 'expo-router';
+import { Stack, router } from 'expo-router';
 import LottieView from 'lottie-react-native';
-import { RefObject, useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { RefObject, useState } from 'react';
+import { StyleSheet, View, useColorScheme } from 'react-native';
 import AppButton from '../components/AppButton';
 import BreathPicker from '../components/BreathPicker';
 import HomeScreenTransitionAnimation from '../components/HomeScreenTransitionAnimation';
 import Screen from '../components/Screen';
+import colors from '@/services/colors';
 
 const HomeScreen = () => {
   const [isBox, setIsBox] = useState(false);
   const [animRef, setAnimRef] = useState<RefObject<LottieView>>();
+  const colorScheme = useColorScheme();
+
+  const containerStyle = colorScheme === 'light' ? styles.containerLight : styles.containerDark;
 
   const {
     average: cyclicAverage,
@@ -29,7 +33,7 @@ const HomeScreen = () => {
 
   const handleStart = () => {
     if (isBox) {
-      router.push('/BoxSessionScreen');
+      router.replace('/BoxSessionScreen');
     } else {
       router.push('/CyclicSessionScreen');
     }
@@ -40,13 +44,14 @@ const HomeScreen = () => {
 
   return (
     <Screen>
-      <View style={styles.container}>
+      <View style={[styles.container, containerStyle]}>
         <View style={styles.topControllers}>
           <AppButton onPress={() => router.push('/SettingsScreen')}>Settings</AppButton>
           <AppButton onPress={() => router.push('/HistoryScreen')}>History</AppButton>
         </View>
         <View style={styles.lottieContainer}>
           <HomeScreenTransitionAnimation
+            theme={colorScheme!}
             setAnimRef={setAnimRef}
             isBox={isBox}
             cyclicAverage={cyclicAverage}
@@ -75,9 +80,14 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'flex-start',
+  },
+  containerLight: {
+    backgroundColor: colors.light.background,
+  },
+  containerDark: {
+    backgroundColor: colors.dark.background,
   },
   topControllers: {
     flexDirection: 'row',

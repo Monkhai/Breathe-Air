@@ -1,14 +1,14 @@
+import colors from '@/services/colors';
+import { router } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, View, useColorScheme } from 'react-native';
 import AppButton from '../components/AppButton';
 import AppText from '../components/AppText';
 import BreathsPerRoundPicker from '../components/BreathsPerRoundPicker';
 import RoundSelector from '../components/RoundSelector';
 import Screen from '../components/Screen';
-import ThemeSwitch from '../components/ThemeSwitch';
 import { Settings, SettingsDAO } from '../db/SQLite';
 import useGetSettings from '../hooks/useGetSettings';
-import { router } from 'expo-router';
 
 const SettingsScreen = () => {
   const dbSettings = new SettingsDAO();
@@ -17,15 +17,17 @@ const SettingsScreen = () => {
   const [noOfRounds, setNoOfRounds] = useState<1 | 2 | 3 | 4 | 5>(3);
   const [noOfBreaths, setNoOfBreaths] = useState<30 | 35>();
   const [OGSettings, setOGSettings] = useState<Settings>();
-  const { settings, isLoading, error } = useGetSettings();
   const isSaved = useRef<Boolean>();
-
+  const { settings, isLoading, error } = useGetSettings();
+  const colorScheme = useColorScheme();
+  const containerStyle = colorScheme === 'light' ? styles.containerLight : styles.containerDark;
   useEffect(() => {
     if (settings) {
       setTheme(settings.theme);
       setNoOfRounds(settings.no_of_rounds);
       setNoOfBreaths(settings.no_of_breaths);
       setOGSettings(settings);
+      isSaved.current = false;
     }
   }, [settings]);
 
@@ -66,7 +68,7 @@ const SettingsScreen = () => {
   if (isLoading)
     return (
       <Screen>
-        <View style={styles.container}>
+        <View style={[styles.container, containerStyle]}>
           <View style={styles.topControllers}>
             <AppButton icon="chevron-back" onPress={handleBack}>
               Home
@@ -85,7 +87,7 @@ const SettingsScreen = () => {
 
   return (
     <Screen>
-      <View style={styles.container}>
+      <View style={[styles.container]}>
         <View style={styles.topControllers}>
           <AppButton icon="chevron-back" onPress={handleBack}>
             Home
@@ -108,13 +110,7 @@ const SettingsScreen = () => {
               <RoundSelector selectedRound={noOfRounds} setSelectedRound={setNoOfRounds} />
             </View>
           </View>
-          <View style={styles.categoryContainer}>
-            <AppText fontSize="large">Theme</AppText>
-            <View style={styles.verticalContainer}>
-              <AppText>Color scheme</AppText>
-              <ThemeSwitch setTheme={setTheme} theme={theme} />
-            </View>
-          </View>
+          <View style={styles.categoryContainer}></View>
         </View>
         <View style={styles.bottomControllers}>
           <AppButton onPress={saveSettings} fontSize="regular" fontWeight="regular">
@@ -131,9 +127,14 @@ export default SettingsScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'flex-start',
+  },
+  containerLight: {
+    backgroundColor: colors.light.background,
+  },
+  containerDark: {
+    backgroundColor: colors.dark.background,
   },
   topControllers: {
     flexDirection: 'row',

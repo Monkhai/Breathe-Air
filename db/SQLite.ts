@@ -365,20 +365,24 @@ class BoxSessionHistoryDAO {
   }
 
   public async createBoxSession(duration: number): Promise<number> {
-    return new Promise((res, rej) => {
-      db.transaction(
-        (tx: SQLite.SQLTransaction) => {
-          tx.executeSql(
-            `INSERT INTO box_sessions (duration) VALUES (?);`,
-            [duration],
-            (_, resultSet) => res(resultSet.insertId!)
-          );
-        },
-        (error: Error) => {
-          console.error(`Error occurred while creating a new box session: ${error}`);
-          rej(error);
-        }
-      );
+    return new Promise((resolve, reject) => {
+      if (duration > 0) {
+        db.transaction(
+          (tx: SQLite.SQLTransaction) => {
+            tx.executeSql(
+              `INSERT INTO box_sessions (duration) VALUES (?);`,
+              [duration],
+              (_, resultSet) => resolve(resultSet.insertId!)
+            );
+          },
+          (error: Error) => {
+            console.error(`Error occurred while creating a new box session: ${error}`);
+            reject(error);
+          }
+        );
+      } else {
+        resolve(0);
+      }
     });
   }
 

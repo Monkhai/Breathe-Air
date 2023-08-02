@@ -1,14 +1,22 @@
+import useGetTheme from '@/services/colors';
 import Constants from 'expo-constants';
 import { StatusBar } from 'expo-status-bar';
 import React, { ReactNode } from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import { SafeAreaView, StyleSheet, useColorScheme } from 'react-native';
 
 interface Props {
   children: ReactNode;
 }
 
 const Screen = ({ children }: Props) => {
-  return <SafeAreaView style={styles.container}>{children}</SafeAreaView>;
+  const colorScheme = useColorScheme();
+
+  return (
+    <SafeAreaView style={[styles.container]}>
+      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+      {children}
+    </SafeAreaView>
+  );
 };
 
 export default Screen;

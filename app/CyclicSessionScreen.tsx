@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
 import LottieView from 'lottie-react-native';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Alert, Animated, StyleSheet, View } from 'react-native';
+import { Alert, Animated, StyleSheet, View, useColorScheme } from 'react-native';
 import AppButton from '../components/AppButton';
 import AppText from '../components/AppText';
 import CyclicSessionAnimation from '../components/CyclicSessionAnimation';
@@ -9,6 +9,7 @@ import Screen from '../components/Screen';
 import Stopwatch from '../components/Stopwatch';
 import { CyclicSessionHistoryDAO, CyclicSessionsDAO, SettingsDAO } from '../db/SQLite';
 import useGetSettings from '@/hooks/useGetSettings';
+import colors from '@/services/colors';
 
 const INITIAL_INHALE_SECONDS = 15;
 const INITIAL_EXHALE_SECONDS = 0;
@@ -39,6 +40,9 @@ const CyclicSessionScreen = () => {
   const animRef = useRef<LottieView>(null);
   let CYCLIC_TIMEOUT = useRef<NodeJS.Timeout | null>(null);
   const { settings, isLoading, error } = useGetSettings();
+  const colorScheme = useColorScheme();
+  const containerStyle = colorScheme === 'light' ? styles.containerLight : styles.containerDark;
+
   //-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT
   //-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT
   useEffect(() => {
@@ -219,8 +223,7 @@ const CyclicSessionScreen = () => {
   //----------------------------------------------------------------------------------------------------------------------------------------------------------
   //----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  if (isLoading)
-    return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}></View>;
+  if (isLoading) return <View style={[styles.container, containerStyle]}></View>;
   if (error)
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -229,13 +232,14 @@ const CyclicSessionScreen = () => {
     );
   return (
     <Screen>
-      <View style={styles.container}>
+      <View style={[styles.container, containerStyle]}>
         <View style={styles.topControllers}>
           {!isPaused ? (
             <AppButton onPress={handlePause}>Pause</AppButton>
           ) : (
             <AppButton onPress={handleContinue}>Continue</AppButton>
           )}
+          <AppText>{roundIndex}</AppText>
         </View>
         <View style={styles.lottieContainer}>
           {isExhaleStopwatchActive || isInhaleStopwatchActive ? (
@@ -286,9 +290,14 @@ export default CyclicSessionScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'flex-start',
+  },
+  containerLight: {
+    backgroundColor: colors.light.background,
+  },
+  containerDark: {
+    backgroundColor: colors.dark.background,
   },
   topControllers: {
     flexDirection: 'row',

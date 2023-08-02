@@ -8,6 +8,7 @@ import {
   ScrollView,
   StyleSheet,
   View,
+  useColorScheme,
 } from 'react-native';
 import LottieView from 'lottie-react-native';
 import * as Haptics from 'expo-haptics';
@@ -22,6 +23,7 @@ const BreathPicker = ({ animRef, isBox, setIsBox }: Props) => {
   const snapInterval = Dimensions.get('window').width;
   const [didVibrate, setDidVibrate] = useState(true);
   const fadeAnim = useRef(new Animated.Value(1)).current;
+  const colorScheme = useColorScheme();
 
   const fadeOut = (callback: () => void) => {
     Animated.timing(fadeAnim, {
@@ -81,14 +83,22 @@ const BreathPicker = ({ animRef, isBox, setIsBox }: Props) => {
       <View style={styles.imageContainer}>
         <View>
           <Image
-            source={require('../assets/pickers/cyclic-breathing-picker.png')}
+            source={
+              colorScheme === 'light'
+                ? require('../assets/pickers/cyclic-breathing-picker.png')
+                : require('../assets/pickers/dark/cyclic-breathing-picker-dark.png')
+            }
             style={styles.image}
           />
         </View>
       </View>
       <View style={styles.imageContainer}>
         <Image
-          source={require('../assets/pickers/box-breathing-picker.png')}
+          source={
+            colorScheme === 'light'
+              ? require('../assets/pickers/box-breathing-picker.png')
+              : require('../assets/pickers/dark/box-breathing-picker-dark.png')
+          }
           style={styles.image}
         />
       </View>

@@ -3,11 +3,12 @@ import { formatTime } from '@/services/timeFormators';
 import { router } from 'expo-router';
 import LottieView from 'lottie-react-native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, useColorScheme } from 'react-native';
 import AppButton from '../components/AppButton';
 import AppText from '../components/AppText';
 import BoxSessionAnimation from '../components/BoxSessionAnimation';
 import Screen from '../components/Screen';
+import colors from '@/services/colors';
 
 const BoxSessionScreen = () => {
   const [isPaused, setIsPaused] = useState(false);
@@ -16,7 +17,8 @@ const BoxSessionScreen = () => {
   const [trigger, setTrigger] = useState(false);
   const [Stopwatch, setStopwatch] = useState<number>(0);
   const dbBoxSession = new BoxSessionHistoryDAO();
-
+  const colorScheme = useColorScheme();
+  const containerStyle = colorScheme === 'light' ? styles.containerLight : styles.containerDark;
   useEffect(() => {
     if (isPaused) {
       animRef?.current?.pause();
@@ -42,7 +44,8 @@ const BoxSessionScreen = () => {
     animRef.current?.play();
   }, [isCountdown]);
 
-  const handleCountdownFinish = useCallback(() => {
+  const handleCountdownFinish = useCallback((isCancelled: boolean) => {
+    if (isCancelled) return;
     setIsCountdown(false);
   }, []);
 
@@ -55,14 +58,18 @@ const BoxSessionScreen = () => {
   };
 
   const finishSession = () => {
-    dbBoxSession.createBoxSession(Stopwatch).then(() => {
+    if (Stopwatch > 0) {
+      dbBoxSession.createBoxSession(Stopwatch).then(() => {
+        router.replace('/');
+      });
+    } else {
       router.replace('/');
-    });
+    }
   };
 
   return (
     <Screen>
-      <View style={styles.container}>
+      <View style={[styles.container, containerStyle]}>
         <View style={styles.topControllers}>
           {!isPaused ? (
             <AppButton onPress={handlePause}>Pause</AppButton>
@@ -103,9 +110,14 @@ export default BoxSessionScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'flex-start',
+  },
+  containerLight: {
+    backgroundColor: colors.light.background,
+  },
+  containerDark: {
+    backgroundColor: colors.dark.background,
   },
   topControllers: {
     flexDirection: 'row',

@@ -1,19 +1,16 @@
-import { SettingsDAO } from '@/db/SQLite';
-
-const settingsGeter = new SettingsDAO();
-
-let colorTheme: string = 'light';
-settingsGeter.getSettings().then(({ theme }) => (colorTheme = theme));
-
 export default {
-  primary: colorTheme === 'light' ? '#246BA0' : '#FEFBEA',
-  secondary: colorTheme === 'light' ? '#E8F3FF' : '#FEFBEA',
-  background: colorTheme === 'light' ? '#FFFFFF' : '#01161E',
-  tertiary: colorTheme === 'light' ? '#000000' : '#FEFBEA',
-  darkTheme: {
+  light: {
+    primary: '#246BA0',
+    secondary: '#E8F3FF',
+    background: '#FFFFFF',
+    tertiary: '#000000',
+    divider: 'rgba(0,0,0,0.15)',
+  },
+  dark: {
     primary: '#FEFBEA',
     secondary: '#FEFBEA',
     background: '#01161E',
-    tertriary: '#FEFBEA',
+    tertiary: '#FEFBEA',
+    divider: 'rgba(255,255,255,0.15)',
   },
 };

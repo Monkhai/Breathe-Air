@@ -1,7 +1,14 @@
-import { Animated, StyleSheet, Text, View } from 'react-native';
-import React, { useEffect, useRef, useState } from 'react';
-import { TouchableWithoutFeedback } from 'react-native';
+import colors from '@/services/colors';
 import * as Haptics from 'expo-haptics';
+import React, { useEffect, useRef } from 'react';
+import {
+  Animated,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+  useColorScheme,
+} from 'react-native';
 
 interface Props {
   noOfBreaths: 30 | 35;
@@ -10,13 +17,18 @@ interface Props {
 
 const BreathsPerRoundPicker = ({ noOfBreaths, setNoOfBreaths }: Props) => {
   const INDICATOR_POSITIONS = [5.333333333333333, 54.666666666666664];
+  const colorScheme = useColorScheme();
+  const containerStyle = colorScheme === 'light' ? styles.containerLight : styles.containerDark;
+  const selectedIndicatorStyle =
+    colorScheme === 'light' ? styles.selectedIndicatorLight : styles.selectedIndicatorDark;
+
   const animatedSelector = useRef(
     new Animated.Value(INDICATOR_POSITIONS[noOfBreaths === 30 ? 0 : 1])
   ).current;
 
   useEffect(() => {
     animatedSelector.setValue(INDICATOR_POSITIONS[noOfBreaths === 30 ? 0 : 1]);
-  });
+  }, []);
 
   const triggerHeavyHaptics = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
@@ -50,13 +62,43 @@ const BreathsPerRoundPicker = ({ noOfBreaths, setNoOfBreaths }: Props) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container]}>
       <Animated.View style={[styles.selectedIndicator, { left: animatedSelector }]} />
       <TouchableWithoutFeedback onPressIn={triggerLightHaptics} onPress={trigger}>
-        <View style={styles.container}>
-          <Animated.View style={[styles.selectedIndicator, { left: animatedSelector }]} />
-          <Text style={{ fontSize: 18, color: noOfBreaths == 30 ? '#246BA0' : 'white' }}>30</Text>
-          <Text style={{ fontSize: 18, color: noOfBreaths == 35 ? '#246BA0' : 'white' }}>35</Text>
+        <View style={[styles.container, containerStyle]}>
+          <Animated.View
+            style={[styles.selectedIndicator, { left: animatedSelector }, selectedIndicatorStyle]}
+          />
+          <Text
+            style={{
+              fontSize: 18,
+              color:
+                noOfBreaths == 30
+                  ? colorScheme === 'light'
+                    ? colors.light.primary
+                    : colors.light.background
+                  : colorScheme === 'dark'
+                  ? colors.dark.background
+                  : colors.dark.primary,
+            }}
+          >
+            30
+          </Text>
+          <Text
+            style={{
+              fontSize: 18,
+              color:
+                noOfBreaths == 35
+                  ? colorScheme === 'light'
+                    ? colors.light.primary
+                    : colors.light.background
+                  : colorScheme === 'dark'
+                  ? colors.dark.background
+                  : colors.dark.primary,
+            }}
+          >
+            35
+          </Text>
         </View>
       </TouchableWithoutFeedback>
     </View>
@@ -70,17 +112,27 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: '#246BA0',
     width: 100,
     height: 48,
     borderRadius: 50,
+  },
+  containerLight: {
+    backgroundColor: colors.light.primary,
+  },
+  containerDark: {
+    backgroundColor: colors.dark.primary,
   },
   selectedIndicator: {
     position: 'absolute',
     width: 40,
     height: 40,
     borderRadius: 50,
-    backgroundColor: 'white',
+  },
+  selectedIndicatorLight: {
+    backgroundColor: colors.light.background,
+  },
+  selectedIndicatorDark: {
+    backgroundColor: colors.dark.background,
   },
   textContainer: {
     minWidth: 48,
