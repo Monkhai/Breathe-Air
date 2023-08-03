@@ -150,7 +150,7 @@ const CyclicSessionScreen = () => {
         {
           text: 'Yes',
           onPress: () => {
-            if (isCountdown) {
+            if (isCountdown || roundIndex < 2) {
               router.replace('/');
               return;
             }
