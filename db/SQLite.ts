@@ -38,67 +38,71 @@ const databaseName = 'app.db';
 export const db: any = SQLite.openDatabase(databaseName);
 
 // Function to create tables and initialize settings
-export const createTables = () => {
-  // db.transaction((tx: SQLite.SQLTransaction) => {
-  //   tx.executeSql(`DROP TABLE IF EXISTS settings;`);
-  //   tx.executeSql(`DROP TABLE IF EXISTS cyclic_history;`);
-  //   tx.executeSql(`DROP TABLE IF EXISTS cyclic_sessions;`);
-  //   tx.executeSql(`DROP TABLE IF EXISTS box_sessions;`);
-  // });
+export const createTables = async (): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    // db.transaction((tx: SQLite.SQLTransaction) => {
+    //   tx.executeSql(`DROP TABLE IF EXISTS settings;`);
+    //   tx.executeSql(`DROP TABLE IF EXISTS cyclic_history;`);
+    //   tx.executeSql(`DROP TABLE IF EXISTS cyclic_sessions;`);
+    //   tx.executeSql(`DROP TABLE IF EXISTS box_sessions;`);
+    // });
 
-  db.transaction(
-    (tx: SQLite.SQLTransaction) => {
-      tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS settings (
-          id INTEGER PRIMARY KEY NOT NULL,
-          theme TEXT,
-          no_of_breaths INTEGER,
-          no_of_rounds INTEGER
-        );`
-      );
-
-      // Check if settings table is empty
-      tx.executeSql(`SELECT COUNT(id) as count FROM settings;`, [], (_, { rows: { _array } }) => {
-        // If the settings table is empty, insert default settings
-        if (_array[0].count === 0) {
-          tx.executeSql(
-            `INSERT INTO settings (id, theme, no_of_breaths, no_of_rounds) 
-               VALUES (1, 'light', 30, 3);`
-          );
-        }
-      });
-
-      tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS cyclic_history (
-          id INTEGER PRIMARY KEY NOT NULL,
-          session_id INTEGER,
-          round_number INTEGER,
-          hold_time INTEGER,
-          FOREIGN KEY(session_id) REFERENCES cyclic_sessions(session_id)
+    db.transaction(
+      (tx: SQLite.SQLTransaction) => {
+        tx.executeSql(
+          `CREATE TABLE IF NOT EXISTS settings (
+            id INTEGER PRIMARY KEY NOT NULL,
+            theme TEXT,
+            no_of_breaths INTEGER,
+            no_of_rounds INTEGER
           );`
-      );
+        );
 
-      tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS cyclic_sessions (
-          session_id INTEGER PRIMARY KEY NOT NULL,
-          no_of_breaths_in_session INTEGER,
-          no_of_rounds_in_session INTEGER,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        );`
-      );
+        // Check if settings table is empty
+        tx.executeSql(`SELECT COUNT(id) as count FROM settings;`, [], (_, { rows: { _array } }) => {
+          // If the settings table is empty, insert default settings
+          if (_array[0].count === 0) {
+            tx.executeSql(
+              `INSERT INTO settings (id, theme, no_of_breaths, no_of_rounds) 
+                 VALUES (1, 'light', 30, 3);`
+            );
+          }
+        });
 
-      tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS box_sessions (
-          session_id INTEGER PRIMARY KEY NOT NULL,
-         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-         duration INTEGER NOT NULL
-        );`
-      );
-    },
-    (error: Error) => {
-      console.error(`Error occurred while creating tables: ${error}`);
-    }
-  );
+        tx.executeSql(
+          `CREATE TABLE IF NOT EXISTS cyclic_history (
+            id INTEGER PRIMARY KEY NOT NULL,
+            session_id INTEGER,
+            round_number INTEGER,
+            hold_time INTEGER,
+            FOREIGN KEY(session_id) REFERENCES cyclic_sessions(session_id)
+            );`
+        );
+
+        tx.executeSql(
+          `CREATE TABLE IF NOT EXISTS cyclic_sessions (
+            session_id INTEGER PRIMARY KEY NOT NULL,
+            no_of_breaths_in_session INTEGER,
+            no_of_rounds_in_session INTEGER,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+          );`
+        );
+
+        tx.executeSql(
+          `CREATE TABLE IF NOT EXISTS box_sessions (
+            session_id INTEGER PRIMARY KEY NOT NULL,
+           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+           duration INTEGER NOT NULL
+          );`
+        );
+        resolve();
+      },
+      (error: Error) => {
+        console.error(`Error occurred while creating tables: ${error}`);
+        reject(error.message);
+      }
+    );
+  });
 };
 
 //SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS

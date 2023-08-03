@@ -1,13 +1,18 @@
 {
   "expo": {
-    "name": "Breathe",
+    "name": "Breathe Air",
     "slug": "BreatheAir",
     "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
-    "androidNavigationBar": { "visible": "immersive" },
+    "androidNavigationBar": {
+      "visible": "immersive"
+    },
+    "androidStatusBar": {
+      "hidden": true
+    },
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
@@ -22,7 +27,8 @@
           "resizeMode": "contain",
           "backgroundColor": "#000000"
         }
-      }
+      },
+      "bundleIdentifier": "com.yohaiwiener.BreatheAir"
     },
     "android": {
       "adaptiveIcon": {

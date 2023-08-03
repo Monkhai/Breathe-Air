@@ -15,7 +15,6 @@ const HomeScreen = () => {
   const [isBox, setIsBox] = useState(false);
   const [animRef, setAnimRef] = useState<RefObject<LottieView>>();
   const colorScheme = useColorScheme();
-
   const containerStyle = colorScheme === 'light' ? styles.containerLight : styles.containerDark;
 
   const {
@@ -35,7 +34,7 @@ const HomeScreen = () => {
     if (isBox) {
       router.replace('/BoxSessionScreen');
     } else {
-      router.push('/CyclicSessionScreen');
+      router.replace('/CyclicSessionScreen');
     }
   };
 

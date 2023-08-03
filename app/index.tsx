@@ -1,10 +1,13 @@
 import { createTables } from '@/db/SQLite';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import HomeScreen from './HomeScreen';
+import { SplashScreen } from 'expo-router';
 
 const App = () => {
+  SplashScreen.preventAutoHideAsync();
+
   useEffect(() => {
-    createTables();
+    createTables().then(() => SplashScreen.hideAsync());
   }, []);
 
   return <HomeScreen />;

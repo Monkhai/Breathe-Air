@@ -1,11 +1,11 @@
-import { Animated, Dimensions, StyleSheet, Text, View, useColorScheme } from 'react-native';
-import React, { RefObject, useEffect, useRef } from 'react';
-import AppText from './AppText';
-import LottieView from 'lottie-react-native';
-import transition from '../assets/animations/transition.json';
 import transitionDark from '@/assets/animations/dark/Transition-dark.json';
-import { formatTime } from '@/services/timeFormators';
 import colors from '@/services/colors';
+import { formatTime } from '@/services/timeFormators';
+import LottieView from 'lottie-react-native';
+import React, { RefObject, useEffect, useRef } from 'react';
+import { Animated, Dimensions, StyleSheet, View, useColorScheme } from 'react-native';
+import transition from '../assets/animations/transition.json';
+import AppText from './AppText';
 
 interface Props {
   setAnimRef: (animRef: RefObject<LottieView>) => void;
@@ -22,13 +22,13 @@ interface Props {
 const HomeScreenTransitionAnimation = ({
   setAnimRef,
   isBox,
+  theme,
   cyclicAverage,
   cyclicMax,
   isCyclicLoading,
   boxAverage,
   boxMax,
   isBoxLoading,
-  theme,
 }: Props) => {
   const animRef = useRef<LottieView>(null);
   const fadeCircleText = useRef(new Animated.Value(0)).current;
