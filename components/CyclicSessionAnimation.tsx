@@ -45,9 +45,9 @@ const CyclicSessionAnimation = ({
             noOfBreaths === 30
               ? colorScheme === 'light'
                 ? cyclic30
-                : cyclic35
-              : colorScheme === 'dark'
-              ? cyclic30Dark
+                : cyclic30Dark
+              : colorScheme === 'light'
+              ? cyclic35
               : cyclic35Dark
           }
           autoPlay

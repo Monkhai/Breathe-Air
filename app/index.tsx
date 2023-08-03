@@ -4,12 +4,6 @@ import HomeScreen from './HomeScreen';
 import { SplashScreen } from 'expo-router';
 
 const App = () => {
-  SplashScreen.preventAutoHideAsync();
-
-  useEffect(() => {
-    createTables().then(() => SplashScreen.hideAsync());
-  }, []);
-
   return <HomeScreen />;
 };
 
