@@ -5,19 +5,8 @@ import { Stack } from 'expo-router/stack';
 import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 
-SplashScreen.preventAutoHideAsync();
-
 export default function Layout() {
   const colorScheme = useColorScheme();
-  const { isLoading, error } = useInitializeTables();
-
-  useEffect(() => {
-    if (!isLoading) SplashScreen.hideAsync();
-  }, [isLoading]);
-
-  useEffect(() => {
-    if (error) throw error;
-  }, [error]);
 
   return (
     <Stack

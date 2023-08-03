@@ -7,16 +7,10 @@
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
-    "androidNavigationBar": {
-      "visible": "immersive"
-    },
-    "androidStatusBar": {
-      "hidden": true
-    },
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/splash-dark.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#01161E"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {

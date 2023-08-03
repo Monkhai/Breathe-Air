@@ -14,7 +14,7 @@ const useInitializeTables = () => {
         setIsloading(false);
         setError(error);
       });
-  });
+  }, []);
 
   return { isLoading, error };
 };

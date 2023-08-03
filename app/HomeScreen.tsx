@@ -1,34 +1,33 @@
-import AppText from '@/components/AppText';
-import useGetBoxStats from '@/hooks/useGetBoxStats';
-import useGetCyclicStats from '@/hooks/useGetCyclicStats';
 import colors from '@/services/colors';
-import { router } from 'expo-router';
+import { SplashScreen, router } from 'expo-router';
 import LottieView from 'lottie-react-native';
-import { RefObject, useState } from 'react';
+import { RefObject, useEffect, useState } from 'react';
 import { StyleSheet, View, useColorScheme } from 'react-native';
 import AppButton from '../components/AppButton';
 import BreathPicker from '../components/BreathPicker';
 import HomeScreenTransitionAnimation from '../components/HomeScreenTransitionAnimation';
 import Screen from '../components/Screen';
+import useInitializeTables from '@/hooks/useInitializeTables';
+
+SplashScreen.preventAutoHideAsync();
 
 const HomeScreen = () => {
+  const { isLoading, error } = useInitializeTables();
+
+  useEffect(() => {
+    if (!isLoading) {
+      SplashScreen.hideAsync();
+    }
+  }, [isLoading]);
+
+  useEffect(() => {
+    if (error) throw error;
+  }, [error]);
+
   const [isBox, setIsBox] = useState(false);
   const [animRef, setAnimRef] = useState<RefObject<LottieView>>();
   const colorScheme = useColorScheme();
   const containerStyle = colorScheme === 'light' ? styles.containerLight : styles.containerDark;
-
-  const {
-    average: cyclicAverage,
-    max: cyclicMax,
-    isLoading: isCyclicLoading,
-    error: cyclicError,
-  } = useGetCyclicStats();
-  const {
-    average: boxAverage,
-    max: boxMax,
-    isLoading: isBoxLoading,
-    error: boxError,
-  } = useGetBoxStats();
 
   const handleStart = () => {
     if (isBox) {
@@ -37,9 +36,6 @@ const HomeScreen = () => {
       router.replace('/CyclicSessionScreen');
     }
   };
-
-  if (boxError) return <AppText>{boxError.message}</AppText>;
-  if (cyclicError) return <AppText>{cyclicError.message}</AppText>;
 
   return (
     <Screen>
@@ -53,12 +49,13 @@ const HomeScreen = () => {
             theme={colorScheme!}
             setAnimRef={setAnimRef}
             isBox={isBox}
-            cyclicAverage={cyclicAverage}
-            cyclicMax={cyclicMax}
-            isCyclicLoading={isCyclicLoading}
-            boxAverage={boxAverage}
-            boxMax={boxMax}
-            isBoxLoading={isBoxLoading}
+            isLoading={isLoading}
+            // cyclicAverage={cyclicAverage}
+            // cyclicMax={cyclicMax}
+            // isCyclicLoading={isCyclicLoading}
+            // boxAverage={boxAverage}
+            // boxMax={boxMax}
+            // isBoxLoading={isBoxLoading}
           />
         </View>
         <View style={styles.scrollViewContainer}>

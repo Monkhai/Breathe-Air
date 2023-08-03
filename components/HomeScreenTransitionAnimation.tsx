@@ -6,36 +6,52 @@ import React, { RefObject, useEffect, useRef } from 'react';
 import { Animated, Dimensions, StyleSheet, View, useColorScheme } from 'react-native';
 import transition from '../assets/animations/transition.json';
 import AppText from './AppText';
+import useGetBoxStats from '@/hooks/useGetBoxStats';
+import useGetCyclicStats from '@/hooks/useGetCyclicStats';
 
 interface Props {
   setAnimRef: (animRef: RefObject<LottieView>) => void;
   isBox: boolean;
-  cyclicAverage: number | null;
-  cyclicMax: number | null;
-  isCyclicLoading: boolean;
-  boxAverage: number | null;
-  boxMax: number | null;
-  isBoxLoading: boolean;
+  // cyclicAverage: number | null;
+  // cyclicMax: number | null;
+  // isCyclicLoading: boolean;
+  // boxAverage: number | null;
+  // boxMax: number | null;
+  // isBoxLoading: boolean;
   theme: 'light' | 'dark';
+  isLoading: boolean;
 }
 
 const HomeScreenTransitionAnimation = ({
   setAnimRef,
   isBox,
   theme,
-  cyclicAverage,
-  cyclicMax,
-  isCyclicLoading,
-  boxAverage,
-  boxMax,
-  isBoxLoading,
-}: Props) => {
+  isLoading,
+}: // cyclicAverage,
+// cyclicMax,
+// isCyclicLoading,
+// boxAverage,
+// boxMax,
+// isBoxLoading,
+Props) => {
   const animRef = useRef<LottieView>(null);
   const fadeCircleText = useRef(new Animated.Value(0)).current;
   const fadeBoxText = useRef(new Animated.Value(0)).current;
   const colorScheme = useColorScheme();
-
   const shadowStyle = colorScheme === 'light' ? styles.shadowLight : styles.shadowDark;
+
+  const {
+    average: cyclicAverage,
+    max: cyclicMax,
+    isLoading: isCyclicLoading,
+    error: cyclicError,
+  } = useGetCyclicStats(isLoading);
+  const {
+    average: boxAverage,
+    max: boxMax,
+    isLoading: isBoxLoading,
+    error: boxError,
+  } = useGetBoxStats(isLoading);
 
   const fadeIn = (text: Animated.Value) => {
     Animated.timing(text, {

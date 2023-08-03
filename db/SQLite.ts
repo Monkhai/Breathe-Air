@@ -37,16 +37,25 @@ const databaseName = 'app.db';
 
 export const db: any = SQLite.openDatabase(databaseName);
 
-// Function to create tables and initialize settings
-export const createTables = async (): Promise<void> => {
+//--------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------
+export const resetDB = async (): Promise<void> => {
   return new Promise((resolve, reject) => {
-    // db.transaction((tx: SQLite.SQLTransaction) => {
-    //   tx.executeSql(`DROP TABLE IF EXISTS settings;`);
-    //   tx.executeSql(`DROP TABLE IF EXISTS cyclic_history;`);
-    //   tx.executeSql(`DROP TABLE IF EXISTS cyclic_sessions;`);
-    //   tx.executeSql(`DROP TABLE IF EXISTS box_sessions;`);
-    // });
+    db.transaction(
+      (tx: SQLite.SQLTransaction) => {
+        tx.executeSql(`DROP TABLE IF EXISTS settings;`);
+        tx.executeSql(`DROP TABLE IF EXISTS cyclic_history;`);
+        tx.executeSql(`DROP TABLE IF EXISTS cyclic_sessions;`);
+        tx.executeSql(`DROP TABLE IF EXISTS box_sessions;`);
+      },
+      (error: Error) => reject(error),
+      () => resolve()
+    );
+  });
+};
 
+const createSettingsTable = () => {
+  return new Promise<void>((resolve, reject) => {
     db.transaction(
       (tx: SQLite.SQLTransaction) => {
         tx.executeSql(
@@ -58,9 +67,7 @@ export const createTables = async (): Promise<void> => {
           );`
         );
 
-        // Check if settings table is empty
         tx.executeSql(`SELECT COUNT(id) as count FROM settings;`, [], (_, { rows: { _array } }) => {
-          // If the settings table is empty, insert default settings
           if (_array[0].count === 0) {
             tx.executeSql(
               `INSERT INTO settings (id, theme, no_of_breaths, no_of_rounds) 
@@ -68,7 +75,63 @@ export const createTables = async (): Promise<void> => {
             );
           }
         });
+      },
+      (error: Error) => {
+        console.error(`Error occurred while creating settings table: ${error}`);
+        reject(error);
+      },
+      () => resolve()
+    );
+  });
+};
 
+const createCyclicSessionsTable = () => {
+  return new Promise<void>((resolve, reject) => {
+    db.transaction(
+      (tx: SQLite.SQLTransaction) => {
+        tx.executeSql(
+          `CREATE TABLE IF NOT EXISTS cyclic_sessions (
+            session_id INTEGER PRIMARY KEY NOT NULL,
+            no_of_breaths_in_session INTEGER,
+            no_of_rounds_in_session INTEGER,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+          );`
+        );
+      },
+      (error: Error) => {
+        console.error(`Error occurred while creating cyclic sessions table: ${error}`);
+        reject(error);
+      },
+      () => resolve()
+    );
+  });
+};
+
+const createBoxSessionsTable = () => {
+  return new Promise<void>((resolve, reject) => {
+    db.transaction(
+      (tx: SQLite.SQLTransaction) => {
+        tx.executeSql(
+          `CREATE TABLE IF NOT EXISTS box_sessions (
+            session_id INTEGER PRIMARY KEY NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            duration INTEGER NOT NULL
+          );`
+        );
+      },
+      (error: Error) => {
+        console.error(`Error occurred while creating box sessions table: ${error}`);
+        reject(error);
+      },
+      () => resolve()
+    );
+  });
+};
+
+const createCyclicHistoryTable = () => {
+  return new Promise<void>((resolve, reject) => {
+    db.transaction(
+      (tx: SQLite.SQLTransaction) => {
         tx.executeSql(
           `CREATE TABLE IF NOT EXISTS cyclic_history (
             id INTEGER PRIMARY KEY NOT NULL,
@@ -78,36 +141,30 @@ export const createTables = async (): Promise<void> => {
             FOREIGN KEY(session_id) REFERENCES cyclic_sessions(session_id)
             );`
         );
-
-        tx.executeSql(
-          `CREATE TABLE IF NOT EXISTS cyclic_sessions (
-            session_id INTEGER PRIMARY KEY NOT NULL,
-            no_of_breaths_in_session INTEGER,
-            no_of_rounds_in_session INTEGER,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-          );`
-        );
-
-        tx.executeSql(
-          `CREATE TABLE IF NOT EXISTS box_sessions (
-            session_id INTEGER PRIMARY KEY NOT NULL,
-           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-           duration INTEGER NOT NULL
-          );`
-        );
       },
       (error: Error) => {
-        console.error(`Error occurred while creating tables: ${error}`);
-        reject(error.message);
+        console.error(`Error occurred while creating cyclic history table: ${error}`);
+        reject(error);
       },
       () => resolve()
     );
   });
 };
 
-//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS
-//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS
-//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS//SETTINGS
+export const createTables = async (): Promise<void> => {
+  try {
+    await createSettingsTable();
+    await createCyclicHistoryTable();
+    await createCyclicSessionsTable();
+    await createBoxSessionsTable();
+  } catch (error) {
+    console.error(`Error occurred while creating tables: ${error}`);
+    throw error;
+  }
+};
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 class SettingsDAO {
   public async getSettings(): Promise<Settings> {
     return new Promise((resolve, reject) => {
@@ -148,9 +205,6 @@ class SettingsDAO {
   }
 }
 
-//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS
-//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS
-//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS//CYCLIC--SESSIONS
 class CyclicSessionsDAO {
   public async getAllSessions(): Promise<CyclicSession[]> {
     return new Promise((resolve, reject) => {
@@ -220,9 +274,6 @@ class CyclicSessionsDAO {
   }
 }
 
-//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//
-//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//
-//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//CYCLIC--HISTORY//
 class CyclicSessionHistoryDAO {
   public async getAllCyclicHistory(): Promise<CyclicSessionHistory[]> {
     return new Promise((resolve, reject) => {
@@ -350,9 +401,6 @@ class CyclicSessionHistoryDAO {
   }
 }
 
-//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//
-//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//
-//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//BOX--HISTORY//
 class BoxSessionHistoryDAO {
   public async getAllCBoxHistory(): Promise<BoxSession[]> {
     return new Promise((resolve, reject) => {
@@ -436,7 +484,6 @@ class BoxSessionHistoryDAO {
     return new Promise((resolve, reject) => {
       db.transaction(
         (tx: SQLite.SQLTransaction) => {
-          // Delete cyclic history records associated with the session
           tx.executeSql(`DELETE FROM box_sessions WHERE session_id = ?;`, [sessionId]);
           resolve();
         },
