@@ -1,7 +1,8 @@
 import AppText from '@/components/AppText';
 import useGetBoxStats from '@/hooks/useGetBoxStats';
 import useGetCyclicStats from '@/hooks/useGetCyclicStats';
-import { Stack, router } from 'expo-router';
+import colors from '@/services/colors';
+import { router } from 'expo-router';
 import LottieView from 'lottie-react-native';
 import { RefObject, useState } from 'react';
 import { StyleSheet, View, useColorScheme } from 'react-native';
@@ -9,7 +10,6 @@ import AppButton from '../components/AppButton';
 import BreathPicker from '../components/BreathPicker';
 import HomeScreenTransitionAnimation from '../components/HomeScreenTransitionAnimation';
 import Screen from '../components/Screen';
-import colors from '@/services/colors';
 
 const HomeScreen = () => {
   const [isBox, setIsBox] = useState(false);

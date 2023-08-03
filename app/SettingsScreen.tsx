@@ -115,9 +115,12 @@ const SettingsScreen = () => {
           <View style={styles.categoryContainer}></View>
         </View>
         <View style={styles.bottomControllers}>
-          <AppButton onPress={saveSettings} fontSize="regular" fontWeight="regular">
-            Save
-          </AppButton>
+          {(OGSettings?.no_of_rounds !== noOfRounds ||
+            OGSettings?.no_of_breaths !== noOfBreaths) && (
+            <AppButton onPress={saveSettings} fontSize="regular" fontWeight="regular">
+              Save
+            </AppButton>
+          )}
         </View>
       </View>
     </Screen>

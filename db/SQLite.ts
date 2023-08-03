@@ -95,12 +95,12 @@ export const createTables = async (): Promise<void> => {
            duration INTEGER NOT NULL
           );`
         );
-        resolve();
       },
       (error: Error) => {
         console.error(`Error occurred while creating tables: ${error}`);
         reject(error.message);
-      }
+      },
+      () => resolve()
     );
   });
 };

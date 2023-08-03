@@ -9,7 +9,7 @@ export const formatDate = (timestamp: string) => {
 
   const dateWithoutTime = date.startOf('day');
   const timeStr = date
-    .toLocaleString({ hour: '2-digit', minute: '2-digit', hour12: true })
+    .toLocaleString({ hour: '2-digit', minute: '2-digit', hour12: true }, { locale: 'en-US' })
     .toLowerCase();
 
   if (dateWithoutTime.equals(today)) {
