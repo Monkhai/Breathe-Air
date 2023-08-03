@@ -1,3 +1,5 @@
+import { generateHeavyHaptics } from '@/services/haptics';
+import LottieView from 'lottie-react-native';
 import React, { Dispatch, RefObject, SetStateAction, useRef, useState } from 'react';
 import {
   Animated,
@@ -10,8 +12,6 @@ import {
   View,
   useColorScheme,
 } from 'react-native';
-import LottieView from 'lottie-react-native';
-import * as Haptics from 'expo-haptics';
 
 interface Props {
   animRef: RefObject<LottieView>;
@@ -63,7 +63,7 @@ const BreathPicker = ({ animRef, isBox, setIsBox }: Props) => {
 
   const generateHapticFeedback = () => {
     if (!didVibrate) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+      generateHeavyHaptics();
       setDidVibrate(true);
     }
   };

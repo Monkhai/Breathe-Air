@@ -1,9 +1,8 @@
+import colors from '@/services/colors';
 import IonIcons from '@expo/vector-icons/Ionicons';
-import * as Haptics from 'expo-haptics';
 import React, { ReactNode } from 'react';
 import { StyleSheet, TouchableOpacity, TouchableOpacityProps, useColorScheme } from 'react-native';
 import AppText from './AppText';
-import colors from '@/services/colors';
 
 interface Props extends TouchableOpacityProps {
   fontWeight?: 'regular' | 'bold' | 'thin' | 'light';
@@ -24,15 +23,7 @@ const AppButton = ({
   const colorScheme = useColorScheme();
 
   return (
-    <TouchableOpacity
-      {...otherProps}
-      onPressIn={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)}
-      onPress={() => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        onPress();
-      }}
-      style={styles.container}
-    >
+    <TouchableOpacity {...otherProps} onPress={onPress} style={styles.container}>
       {icon && (
         <IonIcons
           name={icon as any}

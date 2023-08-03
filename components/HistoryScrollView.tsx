@@ -12,6 +12,7 @@ import AppText from './AppText';
 import BoxHistoryFlatList from './BoxHistoryFlatlist';
 import CyclicHistoryFlatList from './CyclicHistoryFlatList';
 import useGetAllBoxHistory from '@/hooks/useGetAllBoxHistory';
+import { generateHeavyHaptics, generateLightHaptics } from '@/services/haptics';
 
 interface Props {
   onScrollEnd: () => void;
@@ -20,6 +21,7 @@ interface Props {
 const HistoryScrollView = ({ onScrollEnd }: Props) => {
   const [currentPage, setCurrentPage] = useState(0);
   const screenWidth = Dimensions.get('screen').width;
+  const [didVibrate, setDidVibrate] = useState(false);
   const {
     cyclicHistoryData,
     isLoading: isCyclicDataLoading,
@@ -31,7 +33,15 @@ const HistoryScrollView = ({ onScrollEnd }: Props) => {
     const nextPage = Math.round(event.nativeEvent.contentOffset.x / screenWidth);
     if (nextPage !== currentPage) {
       setCurrentPage(nextPage);
+      setDidVibrate(false);
       onScrollEnd();
+    }
+  };
+
+  const generateHapticFeedback = () => {
+    if (!didVibrate) {
+      generateHeavyHaptics();
+      setDidVibrate(true);
     }
   };
 
@@ -41,6 +51,7 @@ const HistoryScrollView = ({ onScrollEnd }: Props) => {
 
   return (
     <ScrollView
+      onMomentumScrollEnd={generateHapticFeedback}
       onScroll={handleScroll}
       scrollEventThrottle={16}
       horizontal
