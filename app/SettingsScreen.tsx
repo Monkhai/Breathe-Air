@@ -32,8 +32,10 @@ const SettingsScreen = () => {
   }, [settings]);
 
   const saveSettings = () => {
-    dbSettings.updateSettings(theme, noOfBreaths!, noOfRounds);
-    isSaved.current = true;
+    dbSettings.updateSettings(theme, noOfBreaths!, noOfRounds).then(() => {
+      isSaved.current = true;
+      router.back();
+    });
   };
 
   const handleBack = () => {

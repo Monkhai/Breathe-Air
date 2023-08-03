@@ -125,22 +125,26 @@ class SettingsDAO {
     });
   }
 
-  public updateSettings(
+  public async updateSettings(
     theme: 'light' | 'dark',
     noOfBreaths: 30 | 35,
     noOfRounds: 1 | 2 | 3 | 4 | 5
-  ) {
-    db.transaction(
-      (tx: SQLite.SQLTransaction) => {
-        tx.executeSql(
-          `UPDATE settings SET theme = ?, no_of_breaths = ?, no_of_rounds = ? WHERE id = 1;`,
-          [theme, noOfBreaths, noOfRounds]
-        );
-      },
-      (error: Error) => {
-        console.error(`Error occurred while updating settings: ${error}`);
-      }
-    );
+  ): Promise<void> {
+    return new Promise((resolve, reject) => {
+      db.transaction(
+        (tx: SQLite.SQLTransaction) => {
+          tx.executeSql(
+            `UPDATE settings SET theme = ?, no_of_breaths = ?, no_of_rounds = ? WHERE id = 1;`,
+            [theme, noOfBreaths, noOfRounds]
+          );
+          resolve();
+        },
+        (error: Error) => {
+          console.error(`Error occurred while updating settings: ${error}`);
+          reject();
+        }
+      );
+    });
   }
 }
 
