@@ -86,7 +86,7 @@ const BoxSessionScreen = () => {
           />
         </View>
         <View style={styles.midSpaceContainer}>
-          <View style={{ paddingBottom: 50, paddingTop: 30 }}>
+          <View style={{ paddingBottom: 50, paddingTop: 55 }}>
             <AppText fontSize="xl">{formatTime(Stopwatch)}</AppText>
           </View>
           <AppText textColor="tertiary" fontWeight="light">
