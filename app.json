@@ -2,7 +2,7 @@
   "expo": {
     "name": "Breathe Air",
     "slug": "BreatheAir",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -10,7 +10,6 @@
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain"
-      // "backgroundColor": "#01161E"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
@@ -29,7 +28,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "versionCode": 2,
+      "versionCode": 3,
       "splash": {
         "dark": {
           "image": "./assets/images/splash-dark.png",
