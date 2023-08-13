@@ -18,6 +18,12 @@ const BoxSessionAnimation = ({ isCountdown, onCountdownFinish, animRef }: Props)
   const colorScheme = useColorScheme();
   const shadowStyle = colorScheme === 'light' ? styles.lottieLight : styles.lottieDark;
 
+  useEffect(() => {
+    if (animRef.current) {
+      animRef.current.play();
+    }
+  }, []);
+
   return (
     <View>
       {isCountdown && (
