@@ -1,15 +1,15 @@
+import useGetSettings from '@/hooks/useGetSettings';
+import colors from '@/services/colors';
 import { router } from 'expo-router';
 import LottieView from 'lottie-react-native';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Animated, StyleSheet, View, useColorScheme } from 'react-native';
 import AppButton from '../components/AppButton';
 import AppText from '../components/AppText';
 import CyclicSessionAnimation from '../components/CyclicSessionAnimation';
 import Screen from '../components/Screen';
 import Stopwatch from '../components/Stopwatch';
-import { CyclicSessionHistoryDAO, CyclicSessionsDAO, SettingsDAO } from '../db/SQLite';
-import useGetSettings from '@/hooks/useGetSettings';
-import colors from '@/services/colors';
+import { CyclicSessionHistoryDAO, CyclicSessionsDAO } from '../db/SQLite';
 
 const INITIAL_INHALE_SECONDS = 15;
 const INITIAL_EXHALE_SECONDS = 0;

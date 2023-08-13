@@ -1,5 +1,6 @@
+import colors from '@/services/colors';
 import LottieView from 'lottie-react-native';
-import React, { RefObject, useEffect, useRef } from 'react';
+import React, { RefObject, useEffect } from 'react';
 import { Dimensions, StyleSheet, View, useColorScheme } from 'react-native';
 import cyclic30 from '../assets/animations/cyclic-30.json';
 import cyclic35 from '../assets/animations/cyclic-35.json';
@@ -7,7 +8,6 @@ import cyclicCountdown from '../assets/animations/cyclic-breathing-countdown.jso
 import cyclic30Dark from '../assets/animations/dark/cyclic-30-dark.json';
 import cyclic35Dark from '../assets/animations/dark/cyclic-35-dark.json';
 import cyclicCountdownDark from '../assets/animations/dark/cyclic-breathing-countdown-dark.json';
-import colors from '@/services/colors';
 
 interface Props {
   index: number;
@@ -27,6 +27,13 @@ const CyclicSessionAnimation = ({
 }: Props) => {
   const colorScheme = useColorScheme();
   const shadowStyle = colorScheme === 'light' ? styles.lottieLight : styles.lottieDark;
+
+  useEffect(() => {
+    if (animRef.current) {
+      animRef.current.play();
+    }
+  }, []);
+
   return (
     <View>
       {isCountdown ? (
