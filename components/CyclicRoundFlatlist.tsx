@@ -1,8 +1,8 @@
-import { Dimensions, FlatList, StyleSheet, Text, View } from 'react-native';
-import React from 'react';
-import AppText from './AppText';
 import { CyclicHistory } from '@/db/SQLite';
 import { formatTime } from '@/services/timeFormators';
+import React from 'react';
+import { Dimensions, FlatList, StyleSheet, View } from 'react-native';
+import AppText from './AppText';
 
 export interface RoundData {
   round: number;

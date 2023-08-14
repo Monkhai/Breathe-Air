@@ -1,9 +1,8 @@
-import { StyleSheet, Text, TextProps, View, useColorScheme } from 'react-native';
 import React, { ReactNode } from 'react';
-import { useGetFonts } from '../services/useGetFonts';
-import fontSizes from '../services/fontSizes';
-import useGetTheme from '../services/colors';
+import { Text, TextProps, useColorScheme } from 'react-native';
 import colors from '../services/colors';
+import fontSizes from '../services/fontSizes';
+import { useGetFonts } from '../services/useGetFonts';
 
 interface Props extends TextProps {
   fontWeight?: 'regular' | 'bold' | 'thin' | 'light';

@@ -1,10 +1,9 @@
+import colors from '@/services/colors';
 import React from 'react';
 import { FlatList, StyleSheet, View, useColorScheme } from 'react-native';
 import { SortedSessionHistory } from '../hooks/useGetAllCyclicHistory';
 import { formatDate, formatTime } from '../services/timeFormators';
 import AppText from './AppText';
-import useGetTheme from '@/services/colors';
-import colors from '@/services/colors';
 
 interface Props {
   historyData: SortedSessionHistory[];

@@ -1,6 +1,5 @@
 import React from 'react';
-import { Animated, StyleSheet, View } from 'react-native';
-import { useGetFonts } from '../services/useGetFonts';
+import { Animated, StyleSheet } from 'react-native';
 import AppText from './AppText';
 
 interface Props {

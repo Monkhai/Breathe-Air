@@ -1,13 +1,12 @@
 import HistoryScrollView from '@/components/HistoryScrollView';
 import PageIndicator from '@/components/PageIndicator';
-import useGetTheme from '@/services/colors';
+import colors from '@/services/colors';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { StyleSheet, View, useColorScheme } from 'react-native';
 import AppButton from '../components/AppButton';
 import AppText from '../components/AppText';
 import Screen from '../components/Screen';
-import colors from '@/services/colors';
 
 const HistoryScreen = () => {
   const colorScheme = useColorScheme();

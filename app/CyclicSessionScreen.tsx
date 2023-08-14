@@ -43,8 +43,8 @@ const CyclicSessionScreen = () => {
   const colorScheme = useColorScheme();
   const containerStyle = colorScheme === 'light' ? styles.containerLight : styles.containerDark;
 
-  //-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT
-  //-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT-------USE EFFECT
+  //-------USE EFFECTS-------USE EFFECTS-------USE EFFECTS-------USE EFFECTS-------USE EFFECTS-------USE EFFECTS-------USE EFFECTS-------USE EFFECTS-------USE EFFECTS
+  //-------USE EFFECTS-------USE EFFECTS-------USE EFFECTS-------USE EFFECTS-------USE EFFECTS-------USE EFFECTS-------USE EFFECTS-------USE EFFECTS-------USE EFFECTS
   useEffect(() => {
     if (settings) {
       setNoOfBreaths(settings.no_of_breaths);
@@ -227,6 +227,8 @@ const CyclicSessionScreen = () => {
   //----------------------------------------------------------------------------------------------------------------------------------------------------------
   //----------------------------------------------------------------------------------------------------------------------------------------------------------
 
+  //-------COMPONENT-------COMPONENT-------COMPONENT-------COMPONENT-------COMPONENT-------COMPONENT-------COMPONENT-------COMPONENT-------COMPONENT
+  //-------COMPONENT-------COMPONENT-------COMPONENT-------COMPONENT-------COMPONENT-------COMPONENT-------COMPONENT-------COMPONENT-------COMPONENT
   if (isLoading) return <View style={[styles.container, containerStyle]}></View>;
   if (error)
     return (

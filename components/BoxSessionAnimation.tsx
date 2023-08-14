@@ -1,11 +1,11 @@
-import { Dimensions, StyleSheet, Text, View, useColorScheme } from 'react-native';
-import React, { RefObject, useEffect, useRef } from 'react';
 import boxSession from '@/assets/animations/box-breathing-1-round.json';
-import boxSessionDark from '@/assets/animations/dark/box-breathing-1-round-dark.json';
 import boxCountdown from '@/assets/animations/box-breathing-countdown.json';
+import boxSessionDark from '@/assets/animations/dark/box-breathing-1-round-dark.json';
 import boxCountdownDark from '@/assets/animations/dark/box-breathing-countdown-dark.json';
-import LottieView from 'lottie-react-native';
 import colors from '@/services/colors';
+import LottieView from 'lottie-react-native';
+import React, { RefObject, useEffect } from 'react';
+import { Dimensions, StyleSheet, View, useColorScheme } from 'react-native';
 
 interface Props {
   isCountdown: boolean;

@@ -1,8 +1,5 @@
-import useInitializeTables from '@/hooks/useInitializeTables';
 import colors from '@/services/colors';
-import { SplashScreen } from 'expo-router';
 import { Stack } from 'expo-router/stack';
-import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 
 export default function Layout() {

@@ -1,4 +1,5 @@
 import { BoxSessionHistoryDAO } from '@/db/SQLite';
+import colors from '@/services/colors';
 import { formatTime } from '@/services/timeFormators';
 import { router } from 'expo-router';
 import LottieView from 'lottie-react-native';
@@ -8,7 +9,6 @@ import AppButton from '../components/AppButton';
 import AppText from '../components/AppText';
 import BoxSessionAnimation from '../components/BoxSessionAnimation';
 import Screen from '../components/Screen';
-import colors from '@/services/colors';
 
 const BoxSessionScreen = () => {
   const [isPaused, setIsPaused] = useState(false);

@@ -495,4 +495,4 @@ class BoxSessionHistoryDAO {
     });
   }
 }
-export { SettingsDAO, CyclicSessionsDAO, CyclicSessionHistoryDAO, BoxSessionHistoryDAO };
+export { BoxSessionHistoryDAO, CyclicSessionHistoryDAO, CyclicSessionsDAO, SettingsDAO };

@@ -1,4 +1,6 @@
+import useGetAllBoxHistory from '@/hooks/useGetAllBoxHistory';
 import useGetAllCyclicHistory from '@/hooks/useGetAllCyclicHistory';
+import { generateHeavyHaptics } from '@/services/haptics';
 import React, { useState } from 'react';
 import {
   Dimensions,
@@ -11,8 +13,6 @@ import {
 import AppText from './AppText';
 import BoxHistoryFlatList from './BoxHistoryFlatlist';
 import CyclicHistoryFlatList from './CyclicHistoryFlatList';
-import useGetAllBoxHistory from '@/hooks/useGetAllBoxHistory';
-import { generateHeavyHaptics, generateLightHaptics } from '@/services/haptics';
 
 interface Props {
   onScrollEnd: () => void;
